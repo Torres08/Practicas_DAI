@@ -1,1 +1,19 @@
-/data
+# Ignorar la carpeta node_modules dentro de Projecto
+Projecto/node_modules/
+
+# Ignorar el archivo .env dentro de Projecto
+Projecto/.env
+
+# Ignorar la carpeta data dentro de Projecto
+Projecto/data/
+
+# Ignorar el archivo package-lock.json dentro de Projecto
+Projecto/package-lock.json
+
+# Ignorar archivos temporales o de log en la carpeta Projecto
+Projecto/*.log
+Projecto/*.tmp
+
+# Ignorar la carpeta prueba dentro de Projecto si no deseas subirla
+Projecto/prueba/
+
