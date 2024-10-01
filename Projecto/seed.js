@@ -1,216 +1,223 @@
+
 // seed.js
-// > npm run seed
+
+/*
+    Copia de seguridad con mongoDB
+    mongodump --host localhost --port 27017 --username root --password example --authenticationDatabase admin --out ~/Documents/Github/Practicas_DAI/Projecto/dump
+*/
 
 import { MongoClient } from 'mongodb'
 
-console.log('🏁 seed.js ----------------->')
+import fetch from 'node-fetch';
+import fs from 'fs-extra';
+import path from 'path';
+  
+console.log( '🏁 seed.js ----------------->')
 
 // del archivo .env
 const USER_DB = process.env.USER_DB
-const PASS = process.env.PASS
-
-const url = `mongodb://${USER_DB}:${PASS}@localhost:27017`
+const PASS    = process.env.PASS
+  
+const url    = `mongodb://${USER_DB}:${PASS}@localhost:27017`
 const client = new MongoClient(url);
-
-// Database Name
+  
+// Nombre de la Base de Datos a Crear
 const dbName = 'myProject';
+  
+// Crear carpeta para guardar imágenes
+const imageDir = './images';
+await fs.ensureDir(imageDir);
 
-// función asíncrona
-async function Inserta_datos_en_colección(colección, url) {
-
-    // coleccion = productos, nombres
-    // url 
-
-    try {
-        // 0. enseñar todos los datos
-        const datos = await fetch(url).then(res => res.json())
-        //console.log(datos)
-
-        // 1. Productos de más de 100 $
-
-        /*
-            Seleccionamos primero la coleccion productos con un if
-            filter productos caros
-            foreach para iterarlos y enseñarlos (productos = title + price)
-        */
-
-        if (colección === 'productos') {
-
-            console.log(`*******\nColeccion: ${colección}\n`)
-
-            const productosCaros = datos.filter(producto => producto.price > 100);
-
-            console.log("---")
-            console.log(`1. Productos de más de 100 $\n`);
-
-            // iteracion 
-            productosCaros.forEach(producto => {
-                console.log(`- ${producto.title}: $${producto.price}`);
-            });
-
-
-            // 2. Productos que contengan 'winter' en la descripción, ordenados por precio
-            // filter + sort
-            // lo hago en la misma coleccion que productos 
-
-
-            console.log("\n---")
-            console.log(`2.Productos que contengan 'winter' en la descripción, ordenados por precio (mayor a menor esta vez)\n`);
-
-            const productosWinter = datos
-                .filter(producto => producto.description.toLowerCase().includes('winter'))
-                .sort((a, b) => a.price - b.price);
-
-            productosWinter.forEach(producto => {
-                console.log(`- ${producto.title}: $${producto.price}`);
-            });
-
-            // 3. Productos de joyería ordenados por rating
-            // filter + sort
-
-            console.log("\n---")
-            console.log(`3. Productos de joyería ordenados por rating\n`);
-
-            const productoJewelery = datos
-                .filter(producto => producto.category == 'jewelery')
-                .sort((a, b) => b.rating.rate - a.rating.rate)  // mayor a menor
-                ;
-
-            productoJewelery.forEach(producto => {
-                console.log(`- ${producto.title}: ${producto.rating.rate} \n ${producto.category}`);
-            });
-
-            // 4. Reseñas totales (count en rating)
-            // reduce () suma en acumulacion
-            console.log("\n---")
-            console.log(`4. Reseñas totales (count en rating)\n`);
-
-            // recorro cada producto en datos (datos = productos y usuarios) donde 
-            // sumo a total el count
-            /*
-            const reseñasTotales = datos.reduce((total, producto) => {
-                return total + (producto.rating.count);
-            }, 0);
-            */
-
-            let reseñasTotales = 0;
-
-            /*
-            for (const producto of datos) {
-                reseñasTotales += producto.rating.count; // Sumar cada 'rating.count'
-            }
-            */
-
-            datos.forEach(producto => {
-                reseñasTotales += producto.rating.count; // Sumar cada 'rating.count'
-            });
-
-
-            console.log(`Reseñas totales: ${reseñasTotales}`)
-
-
-
-            // 4. Puntuación media por categoría de producto
-            // tengo categoria y rating, ordenar segun categoria y sumar su rate, luego dividirlo por el total de productos de cada categoria 
-
-            // 4.1. dividir los producto en categoria
-            // 4.2  coger rate sumarlos + / suma 
-            console.log("\n---")
-            console.log(`5. Reseñas totales (count en rating)\n`);
-
-
-            //  Agrupar productos por categoría
-            const productosCategoria = {}
-            datos.forEach(producto => {
-                const categoria = producto.category
-
-                // inicializar si esta vacio
-                if (!productosCategoria[categoria]) {
-                    productosCategoria[categoria] = [];
-                }
-
-                // agregamos el producto a su categoria
-                productosCategoria[categoria].push(producto);
-
-
-            });
-
-
-            for (const categoria in productosCategoria) {
-                console.log(`Categoría: ${categoria} \nProductos: ${productosCategoria[categoria].length}`);
-
-                let rateTotalCategoria = 0;
-                const productos = productosCategoria[categoria];
-
-                /*
-                for (let i = 0; i < productos.length; i++) {
-                    rateTotalCategoria += productos[i].rating.rate; 
-                }
-                */
-
-                // i = productos[i]
-                /*
-                for (let i of productos){
-                    rateTotalCategoria += i.rating.rate; 
-                }
-                */
-
-                // i = productos[i]
-                productos.forEach(i =>
-                    rateTotalCategoria += i.rating.rate
-                )
-
-                // Calcular la media, manejando la división por cero
-                const media = rateTotalCategoria / productos.length;
-
-                // ${media.toFixed(2)} to fixed 2 para enseñar 2 decimales 
-                console.log(`Media de ${categoria}: ${media.toFixed(2)}\n`);
-            }
-
-
-
-        } else {
-
-            // 6. Usuarios sin digitos en el password
-            // como antes he seleccionado con un if coleccion = producto, el resto por descarte son usuarios 
-
-            /*
-                /\d/ se usa para verificar si hay dígitos en el password. test() devuelve true si encuentra al menos un dígito. ! para los contrario 
-            */
-            
-            console.log(`*******\nColeccion: ${colección}\n`)
-
-
-            const usuariosSinDigitos = datos.filter(usuario => !/\d/.test(usuario.password));
-
-            // Mostrar resultados
-            console.log("Usuarios sin dígitos en el password:");
-            usuariosSinDigitos.forEach(usuario => {
-                console.log(`Username: ${usuario.username} , Password: ${usuario.password}`);
-            });
-            console.log(`\n`)
-
-
-        }
-
-        return `${datos.length} datos traidos para ${colección}\n---\n`
-
-
-    } catch (err) {
-        console.error('Error en Inserta_datos_en_colección:', err);
-        throw err;
-    }
-
+/**
+ * Obtiene una colección de la base de datos.
+ * @param {string} colección - El nombre de la colección a obtener. Productos o Usuarios
+ * @returns {Promise<Collection>} - La colección de la base de datos.
+ */
+async function obtenerColección(colección) {
+    const database = client.db(dbName);
+    return database.collection(colección);
 }
 
-// Inserción consecutiva
-Inserta_datos_en_colección('productos', 'https://fakestoreapi.com/products')
-    .then((r) => console.log(`Todo bien: ${r}`))                                 // OK
 
-    .then(() => Inserta_datos_en_colección('usuarios', 'https://fakestoreapi.com/users'))
-    .then((r) => console.log(`Todo bien: ${r}`))                                // OK
+/**
+ * Función para descargar imágenes y guardarlas en una carpeta local.
+ * @param {string} url - La URL de la imagen a descargar.
+ * @param {string} nombreArchivo - El nombre del archivo en el que se guardará la imagen.
+ * @returns {Promise<void>} - Una promesa que se resuelve cuando la imagen se ha descargado y guardado.
+ */
+async function descargarImagen(url, nombreArchivo) {
+    const res = await fetch(url);
+    const dest = fs.createWriteStream(path.join(imageDir, nombreArchivo));
+    res.body.pipe(dest);
 
-    .catch((err) => console.error('Algo mal: ', err.errorResponse))             // error
+    return new Promise((resolve, reject) => {
+        res.body.on('end', resolve);
+        res.body.on('error', reject);
+    });
+}
+
+/**
+ * Inserta datos en una colección desde una URL.
+ * @param {string} colección - El nombre de la colección en la que se insertarán los datos.
+ * @param {string} url - La URL desde la cual se obtendrán los datos.
+ * @returns {Promise<string>} - Un mensaje indicando el resultado de la operación.
+ */
+async function Inserta_datos_en_colección(colección, url) {
+    try {
+
+        // Conectamos a la base de datos y obtenemos la colección
+        const coleccion = await obtenerColección(colección);
+
+        // Comprobamos si coleccion ya tiene datos, por si ya lo hemos insertado no volver a insertarlo
+        const count = await coleccion.countDocuments();
+        if (count > 0) {
+            return `No se insertaron datos en ${colección}, ya existen ${count} documentos.`;
+        }
+
+        // Caso en que no tiene datos la colección
+        // obtenemos los datos de la URL (fakestoreAPI) con un Fetch
+        const datos = await fetch(url).then(res => res.json());
+
+        // Añadimos opciones para la operación de inserción
+        const options = { ordered: true };
+
+        // Caso en que queramos descargar las imagenes si la coleccion es producto
+        if (colección === 'productos') {
+            for (const producto of datos) {
+                const nombreImagen = `${producto.id}.jpg`;
+                await descargarImagen(producto.image, nombreImagen);
+                console.log(`Imagen descargada: ${nombreImagen}`);
+            }
+        }
+
+        // Insertamos los datos en la colección con un insertMany
+        const result = await coleccion.insertMany(datos, options);
+
+        // Hacemos un return para verlo en la terminal
+        return `${result.insertedCount} documents were inserted`;
+
+    } catch (err) {
+        // Append additional context to the error
+        err.errorResponse = `Error en fetch ${colección}: ${err.message}`;
+        throw err;  // Propagate the error upwards
+    }
+}
 
 
-console.log('Lo primero que pasa\n')
+
+/**
+ * 1. Muestra los productos de más del precio especificado.
+ * @param {number} precio - El precio mínimo de los productos a mostrar.
+ */
+async function mostrarProductosCaros(precio) {
+    const coleccion = await obtenerColección('productos');
+    // $gt: precio = mayor que el precio 
+    const productosCaros = await coleccion.find({ price: { $gt: precio } }).toArray();
+    
+    console.log(`\n1. Productos de más de ${precio} $\n`);
+    productosCaros.forEach(producto => {
+        console.log(`- ${producto.title}: $${producto.price}`);
+    });
+}
+
+/**
+ * 2. Muestra los productos que contengan 'winter' en la descripción, ordenados por precio
+ */
+async function mostrarProductosWinter() {
+    const coleccion = await obtenerColección('productos');
+    const productosWinter = await coleccion.find({ description: { $regex: /winter/i } })
+        .sort({ price: -1 }).toArray();
+    
+    console.log(`\n2. Productos que contengan 'winter' en la descripción, ordenados por precio\n`);
+    productosWinter.forEach(producto => {
+        console.log(`- ${producto.title}: $${producto.price}`);
+    });
+}
+
+/**
+ * 3. Mostramos los productos de joyeria ordenados por rating
+ */
+async function mostrarProductosJoyería() {
+    const coleccion = await obtenerColección('productos');
+    const productoJewelery = await coleccion.find({ category: 'jewelery' })
+        .sort({ 'rating.rate': -1 }).toArray();
+    
+    console.log(`\n3. Productos de joyería ordenados por rating\n`);
+    productoJewelery.forEach(producto => {
+        console.log(`- ${producto.title}: ${producto.rating.rate} \n ${producto.category}`);
+    });
+}
+
+/**
+ * 4. Mostrar reseñas totales, segun el conunt en rating 
+ */
+async function mostrarReseñasTotales() {
+    const coleccion = await obtenerColección('productos');
+    const totalReseñas = await coleccion.aggregate([
+        { $group: { _id: null, total: { $sum: '$rating.count' } } }
+    ]).toArray();
+    
+    console.log(`\n4. Reseñas totales (count en rating)\n`);
+    console.log(`Total de reseñas: ${totalReseñas[0].total}`);
+}
+
+
+/**
+ * 5. Muestra la puntuacion media por categoria de producto
+ */
+async function mostrarPuntuacionMediaPorCategoria() {
+    const coleccion = await obtenerColección('productos');
+    const puntuacionMedia = await coleccion.aggregate([
+        { $group: { _id: '$category', media: { $avg: '$rating.rate' } } }
+    ]).toArray();
+    
+    console.log(`\n5. Puntuación media por categoría de producto\n`);
+    puntuacionMedia.forEach(categoria => {
+        console.log(`- ${categoria._id}: ${categoria.media.toFixed(2)}`);
+    });
+}
+
+/**
+ * 6. Mostramos usuarios sin digitos en su contraseña
+ */
+async function mostrarUsuariosSinDigitos() {
+    const coleccion = await obtenerColección('usuarios');
+    // Expresion regular muestra digitos 0-9, /\d/
+    const usuariosSinDigitos = await coleccion.find({ password: { $not: /\d/ } }).toArray();
+    
+    console.log(`\n6. Usuarios sin digitos en su contraseña\n`);
+    usuariosSinDigitos.forEach(usuario => {
+        console.log(`- ${usuario.username}`);
+    });
+}
+
+async function run() {
+    try {
+        // Conectamos a la base de datos MongoDB
+        await client.connect(); 
+
+        await Inserta_datos_en_colección('productos', 'https://fakestoreapi.com/products')
+            .then((r) => console.log(`Todo bien: ${r}`)) // OK
+            .then(() => Inserta_datos_en_colección('usuarios', 'https://fakestoreapi.com/users'))
+            .then((r) => console.log(`Todo bien: ${r}`)) // OK
+            .catch((err) => console.error('Algo mal: ', err.errorResponse)); // error
+
+        // Ejercicio de consulta     
+        await mostrarProductosCaros(100);
+        await mostrarProductosWinter();
+        await mostrarProductosJoyería();
+        await mostrarReseñasTotales();
+        await mostrarPuntuacionMediaPorCategoria();
+        await mostrarUsuariosSinDigitos();
+
+    } catch (err) {
+        console.error('Algo mal: ', err.errorResponse); // Log errors
+    } finally {
+        // Cerramos la conexión a la base de datos
+        await client.close(); 
+    }
+}
+
+run();
+
+console.log('Lo primero que pasa')
