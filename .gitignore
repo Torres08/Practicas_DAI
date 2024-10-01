@@ -17,3 +17,6 @@ Projecto/*.tmp
 # Ignorar la carpeta prueba dentro de Projecto si no deseas subirla
 Projecto/prueba/
 
+Projecto/images/
+
+Projecto/dump/
