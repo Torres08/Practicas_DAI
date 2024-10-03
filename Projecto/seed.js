@@ -25,7 +25,7 @@ const client = new MongoClient(url);
 const dbName = 'myProject';
   
 // Crear carpeta para guardar imágenes
-const imageDir = './images';
+const imageDir = './prueba/images';
 await fs.ensureDir(imageDir);
 
 /**
@@ -187,7 +187,7 @@ async function mostrarUsuariosSinDigitos() {
     
     console.log(`\n6. Usuarios sin digitos en su contraseña\n`);
     usuariosSinDigitos.forEach(usuario => {
-        console.log(`- ${usuario.username}`);
+        console.log(`- ${usuario.username}, ${usuario.password}`);
     });
 }
 
@@ -196,6 +196,7 @@ async function run() {
         // Conectamos a la base de datos MongoDB
         await client.connect(); 
 
+        // Insertamos los datos en la colección
         await Inserta_datos_en_colección('productos', 'https://fakestoreapi.com/products')
             .then((r) => console.log(`Todo bien: ${r}`)) // OK
             .then(() => Inserta_datos_en_colección('usuarios', 'https://fakestoreapi.com/users'))
@@ -203,12 +204,15 @@ async function run() {
             .catch((err) => console.error('Algo mal: ', err.errorResponse)); // error
 
         // Ejercicio de consulta     
+        
+        /*
         await mostrarProductosCaros(100);
         await mostrarProductosWinter();
         await mostrarProductosJoyería();
         await mostrarReseñasTotales();
         await mostrarPuntuacionMediaPorCategoria();
         await mostrarUsuariosSinDigitos();
+        */
 
     } catch (err) {
         console.error('Algo mal: ', err.errorResponse); // Log errors
