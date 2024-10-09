@@ -1,0 +1,11 @@
+
+/* override */
+.btn-outline-success:hover {
+    background-color: #A367B1;
+    color: white;
+    border-color: #A367B1;
+}
+
+.btn-outline-success {
+    border-color: #A367B1;
+}
