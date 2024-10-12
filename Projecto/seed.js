@@ -6,6 +6,8 @@
     mongodump --host localhost --port 27017 --username root --password example --authenticationDatabase admin --out ~/Documents/Github/Practicas_DAI/Projecto/dump
 */
 
+
+
 import { MongoClient } from 'mongodb'
 
 import fetch from 'node-fetch';

@@ -11,95 +11,147 @@
   <link rel="stylesheet" href="/css/home.css">
 
   <title>{% block title %}{% endblock %} - My Webpage</title>
+
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='%23FFD1E3' viewBox='0 0 16 16'><path d='M8 0a3 3 0 0 0-3 3v1H3.5A1.5 1.5 0 0 0 2 5.5v9A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 12.5 4H11V3a3 3 0 0 0-3-3zM6 3a2 2 0 1 1 4 0v1H6V3zm-2.5 2h9a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5z'/><path d='M3 4.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-1z'/></svg>"
+    type="image/svg+xml">
+
+
   {% endblock %}
 </head>
 
-  <!-- navbar -->
-  <!-- https://colorhunt.co/palette/3924675d3587a367b1ffd1e3 -->
-  <!--   <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: red;"> -->
-  <nav class="navbar navbar-expand-lg" style="background-color: #392467;">
-    <div class="container-fluid">
+<!-- navbar -->
+<!-- https://colorhunt.co/palette/3924675d3587a367b1ffd1e3 -->
+<!--   <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: red;"> -->
+<nav class="navbar navbar-expand-lg" style="background-color: #392467;">
+  <div class="container-fluid">
 
-      <a class="navbar-brand bi bi-bag-fill p-2" href="" style="color: #FFD1E3;"> Store</a>
+    <!-- <a class="navbar-brand bi bi-bag-fill " href="/" style="color: #FFD1E3;"> Store</a> -->
 
-      <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse"
-        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-        aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon" style="color: #FFD1E3;"></span>
-      </button>
+    <a href="/" class="btn navbar-brand p-2 d-flex align-items-center"
+      style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3;"
+      onmouseover="this.style.backgroundColor='#5D3587'; this.style.color='#FFD1E3';"
+      onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3';">
+      <i class="bi bi-bag-fill me-2"></i>
+      <span>Store</span>
+    </a>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon" style="color: #FFD1E3;"></span>
+    </button>
 
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 p-2">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-            <form class="d-flex px-1" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn bi-search btn-outline-success" type="submit" style="color: #FFD1E3;"></button>
-            </form>
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 p-2">
+
+        <form class="d-flex pt-1 px-3" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn p-2 d-flex align-items-center" type="submit"
+            style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3; width: 40px; height: 40px;"
+            onmouseover="this.style.backgroundColor='#5D3587'; this.style.color='#FFD1E3';"
+            onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3';">
+            <i class="bi bi-search"></i>
+          </button>
+        </form>
+
+
+
+        <li class="nav-item dropdown  pt-1">
+          <a href="#" class="btn navbar-brand p-2 d-flex align-items-center dropdown-toggle" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false"
+            style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3; height: 40px; font-size: 1.1em;"
+            onmouseover="this.style.backgroundColor='#5D3587'; this.style.color='#FFD1E3';"
+            onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3';">
+            <span>Categories</span>
+          </a>
+
+
+          <ul class="dropdown-menu" style="background-color: #5D3587;">
+            <li><a class="dropdown-item rounded" href="/mens_clothing"
+                style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3; height: 40px; font-size: 1em;"
+                onmouseover="this.style.backgroundColor='#A367B1'; this.style.color='#FFD1E3';"
+                onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3';">Men's
+                Clothing</a></li>
+
+            <li><a class="dropdown-item rounded" href="/womens_clothing"
+                style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3; height: 40px; font-size: 1em;"
+                onmouseover="this.style.backgroundColor='#A367B1'; this.style.color='#FFD1E3';"
+                onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3';">Women's
+                Clothing</a></li>
             
+                <li><a class="dropdown-item rounded" href="/jewelery"
+                  style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3; height: 40px; font-size: 1em;"
+                  onmouseover="this.style.backgroundColor='#A367B1'; this.style.color='#FFD1E3';"
+                  onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3';">Jewelery</a></li>
+            
+          </ul>
+        </li>
 
-          <li class="nav-item dropdown px-1">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #FFD1E3;">
-              Categories
-            </a>
-            <ul class="dropdown-menu" style="background-color: #5D3587;">
-              <li><a class="dropdown-item disabled" aria-disabled="true" style="color: #A367B1;">Men's Fashion</a></li>
-              <li><a class="dropdown-item disabled" aria-disabled="true" style="color: #A367B1;">Women's Fashion</a></li>
-              <li><a class="dropdown-item disabled" aria-disabled="true" style="color: #A367B1;">Beauty Products</a></li>
-            </ul>
-          </li>
+        <li class="nav-item  pt-1">
+          <a href="#" class="btn navbar-brand p-2 d-flex align-items-center"
+            style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3; height: 40px; font-size: 1.1em;"
+            onmouseover="this.style.backgroundColor='#5D3587'; this.style.color='#FFD1E3';"
+            onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3'; ">
+            <span>Orders</span>
+          </a>
+        </li>
 
-          <li class="nav-item px-1">
-            <a class="nav-link disabled" aria-disabled="true" style="color: #A367B1;">Orders</a>
-          </li>
+        <li class="nav-item  pt-1">
+          <a href="#" class="btn navbar-brand p-2 d-flex align-items-center"
+            style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3; height: 40px; font-size: 1.1em;"
+            onmouseover="this.style.backgroundColor='#5D3587'; this.style.color='#FFD1E3';"
+            onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3'; ">
+            <span>Login</span>
+          </a>
+        </li>
 
-          <li class="nav-item px-1">
-            <a class="nav-link disabled" aria-disabled="true" style="color: #A367B1;">Login</a>
-          </li>
-
-        </ul>
-
-      </div>
+      </ul>
 
     </div>
-  </nav>
+
+  </div>
+</nav>
 
 
-  <div id="content" class="container mt-4">
-    {% block content %}{% endblock %}
+
+
+<div id="content" class="container mt-3 mb-5">
+  {% block content %}{% endblock %}
+</div>
+
+
+<footer class="text-center text-lg-start fixed-bottom " style="background-color: #392467;">
+
+  <!-- Copyright -->
+  <div class="container ">
+    <div class="row">
+      <div class="col-md-6 p-2 text-md-start" style="color: #FFD1E3;">
+        © 2020 Copyright:
+        <a class="text-white" href="https://mdbootstrap.com/" style="color: #A367B1;">MDBootstrap.com</a>
+      </div>
+
+      <div class="col-md-6 text-md-end">
+        <a class="btn" style="color: #FFD1E3;">
+          <i class="bi bi-github"></i>
+        </a>
+        <a class="btn" style="color: #FFD1E3;">
+          <i class="bi bi-facebook"></i>
+        </a>
+        <a class="btn" style="color: #FFD1E3;">
+          <i class="bi bi-google"></i>
+        </a>
+        <a class="btn" style="color: #FFD1E3;">
+          <i class="bi bi-linkedin"></i>
+        </a>
+
+      </div>
+    </div>
   </div>
 
-  <footer class="text-center text-lg-start fixed-bottom" style="background-color: #392467;">
+</footer>
 
-    <!-- Copyright -->
-    <div class="container p-1">
-      <div class="row">
-        <div class="col-md-6 p-2 text-md-start" style="color: #FFD1E3;">
-          © 2020 Copyright:
-          <a class="text-white" href="https://mdbootstrap.com/" style="color: #A367B1;">MDBootstrap.com</a>
-        </div>
-
-        <div class="col-md-6 text-md-end">
-          <a class="btn" style="color: #FFD1E3;">
-            <i class="bi bi-github"></i>
-          </a>
-          <a class="btn" style="color: #FFD1E3;">
-            <i class="bi bi-facebook"></i>
-          </a>
-          <a class="btn" style="color: #FFD1E3;">
-            <i class="bi bi-google"></i>
-          </a>
-          <a class="btn" style="color: #FFD1E3;">
-            <i class="bi bi-linkedin"></i>
-          </a>
-          
-        </div>
-      </div>
-    </div>
-
-  </footer>
-
-  <!-- Bootstrap JS and dependencies from node_modules -->
-  <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap JS and dependencies from node_modules -->
+<script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
 </html>
