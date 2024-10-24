@@ -4,6 +4,7 @@ import nunjucks from "nunjucks";
 import connectDB from "./model/db.js";
 import path from "path"; // Importa path para trabajar con rutas
 import { fileURLToPath } from "url"; // Importa fileURLToPath
+import session from "express-session"
 
 // Calcular __dirname a partir de import.meta.url
 const __filename = fileURLToPath(import.meta.url);
@@ -13,6 +14,7 @@ connectDB();
 
 const app = express();
 const IN = process.env.IN || 'development';
+
 
 // Configuración de Nunjucks
 nunjucks.configure('views', {
@@ -27,6 +29,15 @@ app.set('view engine', 'html');
 // Middleware para archivos estáticos
 app.use(express.static('public')); // Para archivos en la carpeta public
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules'))); // Para archivos en node_modules
+
+// express asi puede interpretar los datos enviados a traves de un formulario HTML con POST
+app.use(express.urlencoded({ extended: true }));
+
+app.use(session({
+	secret: 'my-secret',      // a secret string used to sign the session ID cookie
+	resave: false,            // don't save session if unmodified
+	saveUninitialized: false  // don't create session until something stored
+}))
 
 // Ruta de prueba
 app.get("/hola", (req, res) => {
@@ -48,3 +59,6 @@ const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
     console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
 });
+
+
+

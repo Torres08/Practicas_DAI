@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Carrito{% endblock %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid p-4"></div>
+<h2 class="text-center mb-4 ">Carrito</h2>
+
+
+{% if productos.length > 0 %}
+<div class="row row-cols-1 g-4 p-2">
+
+    <div class="card h-100 shadow-sm hover-shadow" style="transition: transform 0.2s;">
+
+        <div class="col">
+            <div class="h-100 ">
+                <div class="row g-0 h-100 d-flex align-items-center">
+                    <div class="col-10 d-flex align-items-center">
+                        <div class="card-body d-flex flex-column h-100">
+                            <h5 class="card-title mb-0">Total: {{ precioTotal }} $</h5>
+                        </div>
+                    </div>
+                    <div class="col-2  d-flex align-items-center justify-content-left">
+                        <div class="card-body d-flex align-items-center flex-column">
+                            <a href="#"
+                                class="btn card-body d-flex align-items-center flex-column disabled"
+                                style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3;"
+                                onmouseover="this.style.backgroundColor='#5D3587'; this.style.color='#FFD1E3';"
+                                onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3';">
+                                <i class="bi bi-bag-fill" style="font-size: 1.5em;"></i>
+                                <span></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm hover-shadow overflow-auto" style="max-height: 400px; transition: transform 0.2s;">
+        {% for producto in productos %}
+        <div class="col">
+            <div class="h-100 py-3">
+                <div class="row g-0 h-100">
+
+                    <div class="col-4 d-flex align-items-center">
+                        <div class="ratio ratio-16x9">
+                            <img src="{{ producto.image }}" class="img-fluid rounded-start object-fit-contain p-1"
+                                alt="{{ producto.title }}">
+                        </div>
+                    </div>
+
+                    <div class="col-6 ">
+                        <div class="card-body d-flex flex-column h-100">
+                            <h5 class="card-title">{{ producto.title }}</h5>
+                            <!-- añadir el precio -->
+                            <p class="card-text mt-2"><strong>${{ producto.price }}</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="col-2 p-4 d-flex align-items-center justify-content-center">
+                        <div class="card-body d-flex align-items-center flex-column">
+                            <a href="/carrito/eliminar/{{ producto.id }}"
+                                class="btn card-body d-flex align-items-center flex-column"
+                                style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3;"
+                                onmouseover="this.style.backgroundColor='#5D3587'; this.style.color='#FFD1E3';"
+                                onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3';">
+                                <i class="bi bi-bag-x-fill" style="font-size: 1.5em;"></i>
+                                <span></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<p>Tu carrito está vacío.</p>
+{% endif %}
+
+</div>
+
+{% endblock %}
