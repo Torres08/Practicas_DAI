@@ -110,13 +110,22 @@
           });
         </script>
 
-        <li class="nav-item  pt-1">
-          <a href="#" class="btn navbar-brand p-2 d-flex align-items-center"
-            style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3; height: 40px; font-size: 1.1em;"
-            onmouseover="this.style.backgroundColor='#5D3587'; this.style.color='#FFD1E3';"
-            onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3'; ">
-            <span>Login</span>
-          </a>
+        <li class="nav-item pt-1">
+          {% if isAuthenticated %}
+            <a href="/bienvenida" class="btn navbar-brand p-2 d-flex align-items-center"
+              style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3; height: 40px; font-size: 1.1em;"
+              onmouseover="this.style.backgroundColor='#5D3587'; this.style.color='#FFD1E3';"
+              onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3'; ">
+              <span>Bienvenida</span>
+            </a>
+          {% else %}
+            <a href="/login" class="btn navbar-brand p-2 d-flex align-items-center"
+              style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3; height: 40px; font-size: 1.1em;"
+              onmouseover="this.style.backgroundColor='#5D3587'; this.style.color='#FFD1E3';"
+              onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3'; ">
+              <span>Login</span>
+            </a>
+          {% endif %}
         </li>
 
       </ul>
