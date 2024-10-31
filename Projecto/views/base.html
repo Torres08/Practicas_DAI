@@ -55,30 +55,32 @@
           </button>
         </form>
 
+        <!-- Categories -->
         <li class="nav-item dropdown  pt-1">
           <a href="#" class="btn navbar-brand p-2 d-flex align-items-center dropdown-toggle" role="button"
             data-bs-toggle="dropdown" aria-expanded="false"
             style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3; height: 40px; font-size: 1.1em;"
             onmouseover="this.style.backgroundColor='#5D3587'; this.style.color='#FFD1E3';"
             onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3';">
-            <span>Categories</span>
+            <i class="bi bi-tags-fill"></i>
+            <span></span>
           </a>
 
 
           <ul class="dropdown-menu" style="background-color: #5D3587;">
-            <li><a class="dropdown-item rounded" href="/mens_clothing"
+            <li><a class="dropdown-item rounded" href="/mostrar/mens_clothing"
                 style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3; height: 40px; font-size: 1em;"
                 onmouseover="this.style.backgroundColor='#A367B1'; this.style.color='#FFD1E3';"
                 onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3';">Men's
                 Clothing</a></li>
 
-            <li><a class="dropdown-item rounded" href="/womens_clothing"
+            <li><a class="dropdown-item rounded" href="/mostrar/womens_clothing"
                 style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3; height: 40px; font-size: 1em;"
                 onmouseover="this.style.backgroundColor='#A367B1'; this.style.color='#FFD1E3';"
                 onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3';">Women's
                 Clothing</a></li>
 
-            <li><a class="dropdown-item rounded" href="/jewelery"
+            <li><a class="dropdown-item rounded" href="/mostrar/jewelery"
                 style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3; height: 40px; font-size: 1em;"
                 onmouseover="this.style.backgroundColor='#A367B1'; this.style.color='#FFD1E3';"
                 onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3';">Jewelery</a></li>
@@ -116,14 +118,16 @@
               style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3; height: 40px; font-size: 1.1em;"
               onmouseover="this.style.backgroundColor='#5D3587'; this.style.color='#FFD1E3';"
               onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3'; ">
-              <span>Bienvenida</span>
+              <i class="bi bi-person-circle"></i>
+              <span></span>
             </a>
           {% else %}
             <a href="/login" class="btn navbar-brand p-2 d-flex align-items-center"
               style="transition: background-color 0.3s, color 0.3s; color: #FFD1E3; height: 40px; font-size: 1.1em;"
               onmouseover="this.style.backgroundColor='#5D3587'; this.style.color='#FFD1E3';"
               onmouseout="this.style.backgroundColor=''; this.style.color='#FFD1E3'; ">
-              <span>Login</span>
+              <i class="bi bi-box-arrow-in-right"></i>
+              <span></span>
             </a>
           {% endif %}
         </li>

@@ -1,142 +1,16 @@
 {% extends "base.html" %}
+{% from "macros.html" import renderizarBloqueProductos %}
 
 {% block title %}Home{% endblock %}
 
-{% block head %}
-{{ super() }}
-<!-- Añade estilos específicos si es necesario -->
-{% endblock %}
-
 {% block content %}
-
-<!-- #5D3587; -->
 <div class="container-fluid p-2">
-    <h2 class="text-center mb-4 ">Home</h2>
+    <h2 class="text-center mb-4">Home</h2>
 
     <div class="row">
-
-        <!-- Moda Hombre-->
-        <div class="col-lg-4 col-md-6 col-12 p-2">
-
-            <div class="card shadow-sm hover-shadow" style="transition: transform 0.2s">
-                <div class="card-body">
-                    <div id="carouselBloque1" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-
-                            {% for productoHombre in productosHombres %}
-                            <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
-                                <img src="{{ productoHombre.image }}" class="d-block w-100 p-4"
-                                    style="height: 400px; object-fit: contain;">
-                            </div>
-                            {% endfor %}
-
-                        </div>
-                        <hr class="hr hr-blurry" />
-                        
-                        <button class="btn w-100 mb-3 text-center"
-                            style="transition: background-color 0.3s, color 0.3s;"
-                            onmouseover="this.style.backgroundColor='#5D3587'; this.style.color='white';"
-                            onmouseout="this.style.backgroundColor=''; this.style.color='';"
-                            onclick="window.location.href='/mens_clothing';">
-                            <h4 class="m-1">Men's clothing</h4>
-                        </button>
-
-                        <button class="carousel-control-prev p-2" type="button" data-bs-target="#carouselBloque1"
-                            data-bs-slide="prev">
-                            <span aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next p-2" type="button" data-bs-target="#carouselBloque1"
-                            data-bs-slide="next">
-                            <span aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Moda Mujer -->
-        <div class="col-lg-4 col-md-6 col-12 p-2">
-
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <div id="carouselBloque2" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-
-                            {% for productoMujer in productosMujeres %}
-                            <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
-                                <img src="{{ productoMujer.image }}" class="d-block w-100 p-4"
-                                    style="height: 400px; object-fit: contain;">
-                            </div>
-                            {% endfor %}
-
-                        </div>
-                        <hr class="hr hr-blurry" />
-
-                        <button class="btn w-100 mb-3 text-center"
-                            style="transition: background-color 0.3s, color 0.3s;"
-                            onmouseover="this.style.backgroundColor='#5D3587'; this.style.color='white';"
-                            onmouseout="this.style.backgroundColor=''; this.style.color='';"
-                            onclick="window.location.href='/womens_clothing';">
-                            <h4 class="m-1">Women's clothing</h4>
-                        </button>
-
-                        <button class="carousel-control-prev p-2" type="button" data-bs-target="#carouselBloque2"
-                            data-bs-slide="prev">
-                            <span aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next p-2" type="button" data-bs-target="#carouselBloque2"
-                            data-bs-slide="next">
-                            <span aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Joyería -->
-        <div class="col-lg-4 col-md-6 col-12 p-2">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <div id="carouselBloque3" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-
-                            {% for productoJoyeria in productosJoyeria %}
-                            <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
-                                <img src="{{ productoJoyeria.image }}" class="d-block w-100 p-4"
-                                    style="height: 400px; object-fit: contain;">
-                            </div>
-                            {% endfor %}
-
-                        </div>
-                        <hr class="hr hr-blurry" />
-
-                        <button class="btn w-100 mb-3 text-center"
-                            style="transition: background-color 0.3s, color 0.3s;"
-                            onmouseover="this.style.backgroundColor='#5D3587'; this.style.color='white';"
-                            onmouseout="this.style.backgroundColor=''; this.style.color='';"
-                            onclick="window.location.href='/jewelery';">
-                            <h4 class="m-1">Jewelry</h4>
-                        </button>
-
-                        <button class="carousel-control-prev p-2" type="button" data-bs-target="#carouselBloque3"
-                            data-bs-slide="prev">
-                            <span aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next p-2" type="button" data-bs-target="#carouselBloque3"
-                            data-bs-slide="next">
-                            <span aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        {{ renderizarBloqueProductos("carouselBloque1", productosHombres, "men's clothing", "/mostrar/mens_clothing") }}
+        {{ renderizarBloqueProductos("carouselBloque2", productosMujeres, "women's clothing", "/mostrar/womens_clothing") }}
+        {{ renderizarBloqueProductos("carouselBloque3", productosJoyeria, "jewelry", "/mostrar/jewelery") }}
     </div>
 </div>
 

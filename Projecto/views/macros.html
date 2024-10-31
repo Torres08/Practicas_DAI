@@ -1,0 +1,40 @@
+{% macro renderizarBloqueProductos(id, productos, titulo, url) %}
+<div class="col-lg-4 col-md-6 col-12 p-2">
+    <div class="card shadow-sm hover-shadow" style="transition: transform 0.2s">
+        <div class="card-body">
+            <div id="{{ id }}" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for producto in productos %}
+                    <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
+                        <img src="{{ producto.image }}" class="d-block w-100 p-4" style="height: 400px; object-fit: contain;">
+                    </div>
+                    {% endfor %}
+                </div>
+                <hr class="hr hr-blurry" />
+                <button class="btn w-100 mb-3 text-center" style="transition: background-color 0.3s, color 0.3s;"
+                    onmouseover="this.style.backgroundColor='#5D3587'; this.style.color='white';"
+                    onmouseout="this.style.backgroundColor=''; this.style.color='';"
+                    onclick="window.location.href='{{ url }}';">
+                    <h4 class="m-1">{{ titulo }}</h4>
+                </button>
+                <button class="carousel-control-prev p-2" type="button" data-bs-target="#{{ id }}" data-bs-slide="prev">
+                    <span aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next p-2" type="button" data-bs-target="#{{ id }}" data-bs-slide="next">
+                    <span aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card:hover {
+      transform: scale(1.05);
+    }
+</style>
+{% endmacro %}
+
+

@@ -18,26 +18,35 @@ const obtenerProductosPorCategoria = async (categoria) => {
     const productos = await Productos.find({ category: categoria });
     return productos;
   } catch (err) {
-    throw new Error('Error al obtener productos por categoría');
+    throw new Error('Error al obtener productos por categoría ');
   }
 };
 
 
-router.get('/', async (req, res) => {
-  try {
+const mapearCategoria = (categoriaUrl) => {
+  const categorias = {
+    "mens_clothing": "men's clothing",
+    "womens_clothing": "women's clothing",
+    "jewelery": "jewelery",
 
+  };
+  return categorias[categoriaUrl] || categoriaUrl;
+};
+
+
+
+router.get('/', async (req, res) => {
+  const categorias = ["men's clothing", "jewelery", "women's clothing"];
+  try {
     const productosHombres = await obtenerProductosPorCategoria("men's clothing");
     const productosJoyeria = await obtenerProductosPorCategoria("jewelery");
     const productosMujeres = await obtenerProductosPorCategoria("women's clothing");
 
-    // Puedes combinar los productos si es necesario
-    //const productos = [...productos, ...productosHombres, ...productosJoyeria, ...productosMujeres];
-
-    res.render('home.html', { productosHombres, productosJoyeria, productosMujeres })    // ../views/portada.html, 
-  } catch (err) {                                // se le pasa { productos:productos }
+    res.render('home.html',{ productosHombres, productosJoyeria, productosMujeres});
+  } catch (err) {
     res.status(500).send({ err })
   }
-})
+});
 
 router.get('/base', async (req, res) => {
   try {
@@ -50,20 +59,23 @@ router.get('/base', async (req, res) => {
 
 
 // mostrar/:categoria 
-/*
-router.get('/mostrar/:cat', async (req, res) => {
-  const cat = req.params.cat
+
+router.get('/mostrar/:categoria', async (req, res) => {
+  const categoriaUrl = req.params.categoria; // women's clothing, mens clothing, jewelery
   try {
-    const productosHombres = await obtenerProductosPorCategoria("men's clothing");
-    res.render('mens_clothing.html', { productosHombres });
+    const categoria = mapearCategoria(categoriaUrl);
+
+    const productos = await obtenerProductosPorCategoria(categoria);
+
+    console.log("Productos de la categoría:", productos);
+    res.render('categoria.html', { productos, categoria });
   } catch (err) {
     res.status(500).send({ err });
   }
 });
 
-generalizarlo todo en una plantilla 
-*/
 
+/*
 router.get('/mens_clothing', async (req, res) => {
   try {
     const productosHombres = await obtenerProductosPorCategoria("men's clothing");
@@ -90,13 +102,15 @@ router.get('/jewelery', async (req, res) => {
     res.status(500).send({ err });
   }
 });
+*/
+
 
 // ... más rutas aquí
 // archivo de ruta correspondiente 
 router.post('/buscar', async (req, res) => {
   try {
     const busqueda = req.body.query; // Obtener la frase de búsqueda desde request.body
-    
+
     // Verificar que el término de búsqueda no esté vacío
     if (!busqueda) {
       return res.status(400).send({ err: "El término de búsqueda no puede estar vacío" });
@@ -112,7 +126,7 @@ router.post('/buscar', async (req, res) => {
 
     // Renderizar la plantilla con los productos encontrados
     res.render('busqueda.html', { productos: productosFiltrados });
-    
+
   } catch (err) {
     console.error("Error en la búsqueda:", err);  // Log del error en la consola del servidor
     res.status(500).send({ err: err.message || "Error desconocido" });  // Enviar un mensaje de error más claro
@@ -120,10 +134,12 @@ router.post('/buscar', async (req, res) => {
 });
 
 
+
+
 router.get('/carrito', (req, res) => {
   // Obtén los productos del carrito desde la sesión
   const productos = req.session.cart || []; // Asegúrate de que el carrito esté inicializado
-  
+
   // Calcular el precio total de todos los productos en el carrito
   const precioTotal = req.session.precioTotal || 0;
 
@@ -173,7 +189,7 @@ router.post('/carrito/agregar', async (req, res) => {
   try {
     // Obtiene el producto por ID
     const producto = await obtenerProductoPorId(productoId); // Asegúrate de que esta función esté implementada correctamente
-    
+
     // Inicializa el carrito si no existe
     if (!req.session.cart) {
       req.session.cart = [];
@@ -186,7 +202,7 @@ router.post('/carrito/agregar', async (req, res) => {
 
     req.session.precioTotal = req.session.cart.reduce((total, producto) => total + producto.price, 0);
     //console.log('Precio total:', req.session.precioTotal);
-    
+
     // Redirige a la página del carrito
     res.redirect('/carrito');
   } catch (error) {
@@ -202,13 +218,13 @@ router.get('/carrito/eliminar/:id', async (req, res) => {
   try {
     // Obtiene el producto por ID
     const producto = await obtenerProductoPorId(productoId); // Asegúrate de que esta función esté implementada correctamente
-    
+
     // Elimina el producto del carrito
     req.session.cart = req.session.cart.filter(p => p.id !== producto.id);
     req.session.precioTotal = req.session.cart.reduce((total, producto) => total + producto.price, 0);
     //console.log('Producto eliminado del carrito:', producto.title);
     //console.log('Precio total:', req.session.precioTotal);
-    
+
     //console.log(req.session.cart.length);
     // Verifica si el carrito está vacío
     if (req.session.cart.length === 0) {
@@ -218,7 +234,7 @@ router.get('/carrito/eliminar/:id', async (req, res) => {
       res.redirect('/carrito');
 
     }
-    
+
   } catch (error) {
     console.error(error); // Log del error
     res.status(500).send('Error al eliminar el producto del carrito'); // Responde con un mensaje de error
@@ -228,143 +244,12 @@ router.get('/carrito/eliminar/:id', async (req, res) => {
 // tener el req.session.cart en la plantilla 
 router.get('/comprobar-carrito', (req, res) => {
   //console.log('Carrito:', req.session.cart);
-  const carritoVacio= !req.session.cart || req.session.cart.length === 0;
+  const carritoVacio = !req.session.cart || req.session.cart.length === 0;
   res.json({ carritoVacio });
 });
 
-// login, usuarios
 
 
-router.get('/register', (req, res) => {
-  res.render('register.html');
-});
 
-router.get('/login', (req, res) => {
-  res.render('login.html');
-});
-
-
-router.post('/register', async (req, res) => {
-  const { email, password, confirmPassword } = req.body;
-
-  // Validar los datos del usuario
-  if (!email || !password || !confirmPassword) {
-    return res.status(400).send('Todos los campos son obligatorios');
-  }
-
-  if (password !== confirmPassword) {
-    return res.status(400).send('Las contraseñas no coinciden');
-  }
-
-  // Verificar si el usuario ya existe
-  const usuarioExistente = await Usuario.findOne({ email });
-  if (usuarioExistente) {
-    return res.status(400).send('El usuario ya existe');
-  }
-
-  // Hashear la contraseña
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  // Crear un nuevo usuario
-  const nuevoUsuario = new Usuario({
-    email,
-    password: hashedPassword,
-  });
-
-  // Guardar el usuario en la base de datos
-  await nuevoUsuario.save();
-
-  // Mostrar por consola que el usuario ha sido creado
-  console.log(`Nuevo usuario creado: ${email}`);
-
-  res.redirect('/login');
-});
-
-
-// Para recoger datos del formulario de login 
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  console.log("Datos del formulario: " + email + " " + password);
-
-  /*
-    john@gmail.com
-    m38rmF$ 
-
-    john1@gmail.com
-    1234
-  */
-
-  // Simulación de autenticación exitosa
-  // buscar en la base de datos, para luego cambiarlo 
-  try {
-    // Buscar el usuario en la base de datos
-    const usuario = await Usuario.findOne({ email });
-    if (!usuario) {
-      return res.status(400).send('Usuario no encontrado');
-    }
-
-    // Comparar la contraseña
-    console.log("Comparando contraseñas: " + password + " " + usuario.password);
-    
-    const isMatch = await bcrypt.compare(password, usuario.password);
-    
-    // Verificar si la contraseña no está hasheada
-    const isMatch2 = password === usuario.password;
-    
-    if (!isMatch && !isMatch2) {
-      return res.status(400).send('Contraseña incorrecta');
-    }
-
-    // Generar el token JWT
-    const token = jwt.sign({ usuario: usuario.email }, process.env.SECRET_KEY);
-
-    // Enviar el token en una cookie
-    res.cookie("access_token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // en producción, solo con https
-    });
-    
-    res.redirect('/bienvenida');
-
-    // mejor que render
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error en el servidor');
-  }
-  
-});
-
-router.get('/bienvenida', async (req, res) => {
-  // Verificar si el usuario está autenticado
-  if (!req.isAuthenticated) {
-    return res.status(401).send('No has iniciado sesión');
-  }
-
-  console.log("hola" + req.isAuthenticated);
-  // Obtener el usuario de la sesión
-  // comprobar esto 
-  const email = req.username;
-
-  const usuario = await Usuario.findOne({ email });
-
-  console.log("Username: " + usuario + " " + usuario.name);
-  res.render('bienvenida.html', { usuario });
-});
-
-router.get('/logout', (req, res) => {
-  res.clearCookie("access_token");
-  res.redirect('/login');
-});
-
-/*
-Para implementar la autenticación con JSON Web Tokens (JWT) y cookies en tu aplicación, sigue estos pasos:
-
-npm install jsonwebtoken cookie-parser
-
-Añade el middleware cookie-parser a tu aplicación:
-
-
-*/
 
 export default router

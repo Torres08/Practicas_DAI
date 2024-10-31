@@ -81,7 +81,12 @@ app.get("/hola", (req, res) => {
 
 // Rutas de la tienda
 import TiendaRouter from "./routes/router_tienda.js";
+
+import UsuarioRouter from "./routes/router_usuario.js"
+
 app.use("/", TiendaRouter);
+
+app.use("/", UsuarioRouter);
 
 // Middleware para gestión de errores
 app.use((err, req, res, next) => {
