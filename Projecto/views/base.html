@@ -102,7 +102,7 @@
             fetch('/comprobar-carrito')
               .then(response => response.json())
               .then(data => {
-                if (data.carritoVacio ) {
+                if (data.carritoVacio) {
                   var cartButton = document.getElementById('cart-button');
                   cartButton.classList.add('disabled');
                   cartButton.setAttribute('aria-disabled', 'true');

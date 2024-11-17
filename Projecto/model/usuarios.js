@@ -2,6 +2,12 @@ import mongoose from "mongoose";
 
 const usuarioSchema = new mongoose.Schema({
 
+    "admin": {
+        "type": "Boolean",
+        "default": false,
+        "required": false
+    },
+    
     "address": {
         "geolocation": {
             "lat": {

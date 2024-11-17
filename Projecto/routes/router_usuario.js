@@ -83,7 +83,9 @@ router.post('/login', async (req, res) => {
     }
 
     // Generar el token JWT
-    const token = jwt.sign({ usuario: usuario.email }, process.env.SECRET_KEY);
+    const token = jwt.sign({ usuario: usuario.email, admin: usuario.admin}, process.env.SECRET_KEY);
+
+    //const token = jwt.sign({ usuario: user_db.username, admin: user_db.admin }, process.env.SECRET_KEY)
 
     // Enviar el token en una cookie
     res.cookie("access_token", token, {
@@ -104,14 +106,20 @@ router.get('/bienvenida', async (req, res) => {
     return res.status(401).send('No has iniciado sesión');
   }
 
-  console.log("hola" + req.isAuthenticated);
+  //console.log("hola" + req.isAuthenticated);
+  
   // Obtener el usuario de la sesión
-  const email = req.username;
-
+  //const email = req.username;
+  const token = req.cookies.access_token;
+  const decoded = jwt.verify(token, process.env.SECRET_KEY);
+  const email = decoded.usuario;
+  
   const usuario = await Usuario.findOne({ email });
 
   console.log("Username: " + usuario + " " + usuario.name);
+  
   res.render('bienvenida.html', { usuario });
+
 });
 
 router.get('/logout', (req, res) => {
