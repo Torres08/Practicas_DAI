@@ -67,7 +67,7 @@ router.get('/mostrar/:categoria', async (req, res) => {
 
     const productos = await obtenerProductosPorCategoria(categoria);
 
-    console.log("Productos de la categoría:", productos);
+   // console.log("Productos de la categoría:", productos);
     res.render('categoria.html', { productos, categoria });
   } catch (err) {
     res.status(500).send({ err });
@@ -102,8 +102,6 @@ router.post('/buscar', async (req, res) => {
     res.status(500).send({ err: err.message || "Error desconocido" });  // Enviar un mensaje de error más claro
   }
 });
-
-
 
 
 router.get('/carrito', (req, res) => {
@@ -163,18 +161,24 @@ router.get('/producto/:id', async (req, res) => {
 
 
 // Ruta para editar el producto
-router.post('/producto/:id/editar', async (req, res) => {
-  const productoId = req.params.id;
-  console.log('hola', productoId); // Log para verificar el ID
+router.post('/producto/:id/editar/', async (req, res) => {
+  
+  const productoId = req.params.id; 
+  //const _id = req.params._id; // lo uso luego para el redireccionamiento a la página del producto
+  // findone
+
+  console.log('ID del producto:', productoId);
 
   try {
+    const _id = await Productos.findOne({id: productoId});
+    //console.log('_ID del producto:', _id);
     const { title, price } = req.body;
-    const producto = await Productos.findByIdAndUpdate(productoId, { title, price }, { new: true, runValidators: true });
+    const producto = await Productos.findByIdAndUpdate(_id, { title, price }, { new: true, runValidators: true });
     if (!producto) {
       return res.status(404).send('Producto no encontrado');
     }
-    res.redirect('/');
-    //res.redirect(`/productos/${productoId}`);
+    //res.redirect('/');
+    res.redirect(`/producto/${productoId}`);
 
   } catch (error) {
     console.error(error);
