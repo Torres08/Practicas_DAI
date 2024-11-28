@@ -79,6 +79,12 @@ app.use((req, res, next) => {
   next();
 });
 */
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.isAuthenticated;
+  next();
+});
+
 app.use((err, req, res, next) => {
   logger.error(err.stack); // Usar el logger
   res.status(500).send('Algo salió mal!');

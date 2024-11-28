@@ -29,13 +29,13 @@ router.get('/api/ratings', async (req, res) => {
 router.get('/api/ratings/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const producto = await Productos.findOne({ id: id }, 'id rating');
+    const producto = await Productos.findOne({ _id: id }, '_id rating');
     if (!producto) {
       return res.status(404).send({ error: 'Producto no encontrado' });
     }
     res.json(producto);
   } catch (err) {
-    logger.error('Error al obtener el rating del producto:', err); // logger
+    console.error('Error al obtener el rating del producto:', err);
     res.status(500).send({ error: 'Error al obtener el rating del producto' });
   }
 });
@@ -45,7 +45,7 @@ router.put('/api/ratings/:id', async (req, res) => {
   const { id } = req.params;
   const { rating } = req.body;
   try {
-    const producto = await Productos.findOneAndUpdate({ id: id }, { rating }, { new: true, runValidators: true });
+    const producto = await Productos.findOneAndUpdate({ _id: id }, { rating }, { new: true, runValidators: true });
     if (!producto) {
       return res.status(404).send({ error: 'Producto no encontrado' });
     }

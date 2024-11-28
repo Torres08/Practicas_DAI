@@ -54,7 +54,7 @@
                                             </div>
                                             <div class="mb-3 ps-5">
                                                 <label for="price" class="form-label">Precio:</label>
-                                                <input type="number" id="price" name="price" value="{{ producto.price }}" class="form-control" required>
+                                                <input type="number" id="price" name="price" value="{{ producto.price }}" class="form-control" required step="0.01">
                                             </div>
                                         </div>
                                         <div class="ps-5 col-12 col-md-1 d-flex align-items-center justify-content-center px-2">
@@ -80,6 +80,11 @@
                         </div>
                         <!-- añadir el precio -->
                         <p class="card-text mt-2"><strong>${{ producto.price }}</strong></p>
+
+                        <span class="stars" data-_id="{{ producto._id }}"> 
+                            Aquí irá el rating de {{ producto._id }}
+                        </span>
+
                     </div>
                 </div>
                 <!-- Si no es admin, mostrar el botón de añadir al carrito -->

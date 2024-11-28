@@ -8,12 +8,11 @@ GET http://localhost:8000/api/ratings?desde=0&hasta=4
 GET http://localhost:8000/api/ratings?desde=5&hasta=9
 
 ### Obtener el rating de un producto específico
-GET http://localhost:8000/api/ratings/1
+GET http://localhost:8000/api/ratings/66fc09d24af518ec3dec96db
 
 ### Modificar el rating de un producto específico
-PUT http://localhost:8000/api/ratings/1
+PUT http://localhost:8000/api/ratings/66fc09d24af518ec3dec96db
 Content-Type: application/json
-
 {
   "rating": {
     "rate": 4.5,
