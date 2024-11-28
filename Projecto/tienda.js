@@ -7,7 +7,7 @@ import { fileURLToPath } from "url"; // Importa fileURLToPath
 import session from "express-session"
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
-
+import logger from './model/logger.js';
 
 
 // Calcular __dirname a partir de import.meta.url
@@ -46,6 +46,11 @@ app.use(session({
 // Middleware para manejar cookies
 app.use(cookieParser());
 
+
+// P4. Middleware para manejar JSON
+app.use(express.json());
+
+
 // Middleware de autenticación
 const autenticacion = (req, res, next) => {
   const token = req.cookies.access_token;
@@ -55,7 +60,8 @@ const autenticacion = (req, res, next) => {
       req.username = data.usuario; // username en el request
       req.isAuthenticated = true;
     } catch (error) {
-      console.error('Error al verificar el token:', error);
+      //console.error('Error al verificar el token:', error);
+      logger.error('Error al verificar el token:', error);
       req.isAuthenticated = false;
     }
   } else {
@@ -67,16 +73,29 @@ app.use(autenticacion);
 
 
 // Middleware para pasar isAuthenticated a todas las plantillas
+/*
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.isAuthenticated;
   next();
 });
-
-
+*/
+app.use((err, req, res, next) => {
+  logger.error(err.stack); // Usar el logger
+  res.status(500).send('Algo salió mal!');
+});
 
 // Ruta de prueba
 app.get("/hola", (req, res) => {
+    logger.info('Ruta /hola fue accedida'); // Log de información
     res.send('Hola desde el servidor');
+});
+
+
+// http://localhost:8000/ejemplo-logger
+app.get("/ejemplo-logger", (req, res) => {
+  logger.info('Ruta /ejemplo-logger fue accedida'); // Log de información
+  logger.error(new Error("an error"));
+  res.send('Ejemplo logger Winston');
 });
 
 // Rutas de la tienda
@@ -84,9 +103,13 @@ import TiendaRouter from "./routes/router_tienda.js";
 
 import UsuarioRouter from "./routes/router_usuario.js"
 
+import ApiRouter from "./routes/router_api.js";
+
 app.use("/", TiendaRouter);
 
 app.use("/", UsuarioRouter);
+
+app.use("/", ApiRouter);
 
 // Middleware para gestión de errores
 app.use((err, req, res, next) => {
