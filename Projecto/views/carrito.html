@@ -59,6 +59,11 @@
                             <h5 class="card-title">{{ producto.title }}</h5>
                             <!-- añadir el precio -->
                             <p class="card-text mt-2"><strong>${{ producto.price }}</strong></p>
+
+                            <span class="stars" data-_id="{{ producto._id }}"> 
+                                Aquí irá el rating de {{ producto._id }}
+                            </span>
+
                         </div>
                     </div>
 
