@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js" integrity="sha512-jwrwRWZWW9J6bjmBOJxPcbRvEBSQeY4Ad0NEXSfP0vwYi/Yu9x5VhDBl3wz6Pnxs8Rx/t1P8r9/OHCRciHcT7Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    <style>
+      li {
+        padding-bottom: 1em;
+      }
+      h5, h6 {
+        padding-top: 1em;
+      }
+      ul {
+        padding-top: 1em;
+      }
+    </style>
+
+    <title>DAI Práctica 2.2 - Carrito</title>
+  </head>
+  <body>
+    <br>
+    <div class="container">
+
+      <img  style="width:100%; margin-top: -4em; height: 24em;" alt=""
+			   src="https://conviertemas.com/wp-content/uploads/2022/06/Tienda-online-CMAS-3.png">
+      <br>
+      <h6><span class="badge text-bg-danger">Entrega 1 de Noviembre</span></h6>
+      <h2>
+        Práctica 2.2: &nbsp; Tienda on-line: Búsquedas, carrito
+      </h2>
+      <br>
+      <div class="text-muted h5">17 - 25 de Octubre</div>
+      <div class="text-muted h6 fst-italic">José María Guirao (<a href="mailto:jmguirao@ugr.es">jmguirao@ugr.es</a>)</div>
+    
+      <br>
+			<h5>Búsquedas</h5>
+			<p>
+				Pondremos a funcionar el formulario del menú superior, para que se muestren los productos que contengan 
+				la frase de búsqueda en el título o en la descripción.
+			</p>
+			<p>
+				Los datos de vuelta a la aplicación se mandan 
+				<a href="https://www.w3schools.com/tags/ref_urlencode.ASP">url encoded</a>, (HTTP es un protocolo ASCII).
+				Para tenerlos limpios hay que incluir en el servidor:
+				<pre><code class="language-javascript">// tienda.js 
+...
+app.use(express.urlencoded({ extended: true }));
+...</code></pre>
+ Y ya se pueden 
+ <a href="https://www.digitalocean.com/community/tutorials/use-expressjs-to-get-url-and-post-parameters#step-5-using-req-body-with-post-parameters">usar</a>
+ los parámetros enviados por el navegador desde  <code>request.body</code>.
+			</p>
+
+
+			<h5>Carrito</h5>
+			<p>
+				Añadiremos un icono de carrito en el menú superior, que dará acceso a una página con las 
+				compras realizadas.
+			</p>
+			<p>
+				Para poder comprar, añadiremos a la vista de cada producto, un botón que de acceso a una página de 
+				detalle. 
+			</p>
+			<p>
+				En esta página estará el detalle del producto, incluido el precio, y un botón para añadir al carrito.
+			</p>
+			<p>
+				La información de compras la guardamos en el  servidor usando 
+				<a href="https://www.tutorialspoint.com/expressjs/expressjs_sessions.htm">sesiones</a>,
+				<pre><code class="language-javascript">// tienda.js 
+...
+app.use(session({
+	secret: 'my-secret',      // a secret string used to sign the session ID cookie
+	resave: false,            // don't save session if unmodified
+	saveUninitialized: false  // don't create session until something stored
+}))
+...</code></pre>
+que se instala:
+<pre><code class="language-bash">> npm i express-session</code></pre>
+					
+			</p>
+
+			<br>
+
+			<h6><span class="badge bg-secondary">Para nota</span></h6>
+			<ul>
+				<li> Hacer que el icono del carrito este deshabilitado si no se ha comprado ningún producto.
+				</li>		
+			</ul>	
+	
+      
+  		<p>
+    		<h5>Referencias:</h5>
+    		<ul>
+      		<li><a href="https://developer.mozilla.org/es/docs/Learn/Forms/Your_first_form">Mi primer formulario HTML</a></li>
+		  		<li><a href="https://attacomsian.com/blog/mongoose-like-regex">How to query documents with "like" statement in Mongoose</a></li>
+		  		<li><a href="https://www.digitalocean.com/community/tutorials/use-expressjs-to-get-url-and-post-parameters#step-5-using-req-body-with-post-parameters">How To Retrieve URL and POST Parameters with Express</a></li>
+      		<li><a href="https://icons.getbootstrap.com/">Bootstrap Icons</a>, &nbsp;
+					<a href="https://www.flaticon.com/">Flaticon</a> </li>    
+    		</ul>
+  		</p>
+		</div>
+	</body>
+</html>

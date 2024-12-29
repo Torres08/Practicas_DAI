@@ -1,22 +1,38 @@
-# Ignorar la carpeta node_modules dentro de Projecto
-Projecto/node_modules/
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
 
-# Ignorar el archivo .env dentro de Projecto
-Projecto/.env
+# Entornos virtuales de Python
+venv/
+ENV/
+env/
+.venv/
 
-# Ignorar la carpeta data dentro de Projecto
-Projecto/data/
+# Archivos de entorno
+.env
 
-# Ignorar el archivo package-lock.json dentro de Projecto
-Projecto/package-lock.json
+# Archivos de log
+*.log
 
-# Ignorar archivos temporales o de log en la carpeta Projecto
-Projecto/*.log
-Projecto/*.tmp
+# Archivos temporales
+*.tmp
 
-# Ignorar la carpeta prueba dentro de Projecto si no deseas subirla
-Projecto/prueba/
+# Archivos de configuración de IDE
+.vscode/
+.idea/
 
-Projecto/images/
+# Archivos de sistema
+.DS_Store
+Thumbs.db
 
-Projecto/dump/
+# Carpetas específicas del proyecto
+Documentos/pdfs_clase/
+Practicas/Proyecto/node_modules/
+Practicas/Proyecto_React/node_modules/
+Practicas/Proyecto/data/
+Practicas/Proyecto/.env
+Practicas/Proyecto/package-lock.json
+Practicas/Proyecto/prueba/
+Practicas/Proyecto/images/
+Practicas/Proyecto/dump/

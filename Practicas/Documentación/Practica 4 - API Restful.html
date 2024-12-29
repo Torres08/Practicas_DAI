@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js" integrity="sha512-jwrwRWZWW9J6bjmBOJxPcbRvEBSQeY4Ad0NEXSfP0vwYi/Yu9x5VhDBl3wz6Pnxs8Rx/t1P8r9/OHCRciHcT7Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    <style>
+      li {
+        padding-bottom: 1em;
+      }
+      h5 {
+        padding-top: 1em;
+      }
+      ul {
+        padding-top: 1em;
+      }
+    </style>
+
+    <title>DAI Práctica 4 - API RESTful</title>
+  </head>
+  <body>
+    <br>
+    <div class="container">
+
+      <img  style="margin-left:0vw; width: 70vw; height: 18em;" alt=""
+			   src="https://www.astera.com/wp-content/uploads/2020/01/rest.png">
+    
+			<br><br>
+      <h6><span class="badge text-bg-secondary">Entrega 29 de Noviembre</span></h6>
+      <h2>
+        Práctica 4: &nbsp; API RESTful
+      </h2>
+      <br>
+      <div class="text-muted h5">14, 15 de Noviembre</div>
+      <div class="text-muted h6 fst-italic">José María Guirao (<a href="mailto:jmguirao@ugr.es">jmguirao@ugr.es</a>)</div>
+    
+      <br>
+      <p>
+        En esta práctica haremos un <a href="https://stackoverflow.blog/2020/03/02/best-practices-for-rest-api-design/">API</a> para modificar 
+        el <b>rating</b> de cada producto, y poder hacerlo desde <a href="https://en.wikipedia.org/wiki/Single-page_application">aplicaciones  SPAs</a>, o desde móviles.  
+      </p>
+      <p>
+        Habilitaremos los siguientes <a href="https://blog.postman.com/what-is-an-api-endpoint/">endpoints</a>:
+<pre><code class="language-javascript">GET /api/ratings           // lista con los ratings de todos los productos
+
+GET /api/ratings/:id       // rating del producto con id
+
+PUT /api/ratings/:id      // modifificar rating del producto con id</code></pre>        
+      </p>
+      <br>
+      <h5>Router</h5>
+      <p>
+        Seguiremos <a href="https://medium.com/@sergupe6/api-rest-con-nodejs-express-y-mongodb-286f3b14c717">
+					API REST con NodeJS + Express y MongoDB</a>, pero teniendo en cuenta los errores posibles en la BD.<br>
+
+					Para que funcione la decodificación de los parámetros que se envian en el body, tendremos que
+					añadir el middleware:
+					<pre><code class="language-javascript">// tienda.js
+...
+app.use(express.json())
+...</code></pre>
+			 No hace falta instalar nada en la versión 22 de node.
+      </p>
+
+
+			<h5>Testing</h5>
+      <p>
+        Utillizaremos la extensión de VSCode <a href="https://marketplace.visualstudio.com/items?itemName=humao.rest-client">REST Client</a>
+        para la comprobación y depuración del API.
+        Los endpoints los pondremos en un archivo <b>test-api.http</b> para utilizarlos desde REST Client:
+        <pre><code class="language-javascript">// test-api.http
+
+GET http://localhost:8000/api/ratings/
+
+###          
+
+GET http://localhost:8000/api/ratings/6719f538fdfbd218f753f044
+
+// ...</code></pre>          
+      </p>
+    <br><br
+		
+
+		<h6><span class="badge bg-secondary">Para nota</span></h6>
+		<ul>
+			<li>Poner un páginador al primer endpoint: <code>GET /api/ratings?desde=0&hasta=4</code> para sacar los 
+			5 primeros ratings.</li>
+			<li> Poner un logger en la apliación como en 
+				<a href="https://betterstack.com/community/guides/logging/how-to-install-setup-and-use-winston-and-morgan-to-log-node-js-applications/">
+					A Complete Guide to Winston Logging in Node.js</a>.
+			</li>		
+		</ul>	
+
+    <h5>Referencias</h5>
+    <ul>
+      <li><a href="https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design">RESTful web API design</a></li>
+      <li><a href="https://www.youtube.com/watch?v=u2iHstOH4QU">Como usar RESTClient en Visual Studio Code </a></li>
+      <li><a href="https://masteringjs.io/tutorials/mongoose/find-certain-fields">Mongoose find() Certain Fields</a></li>
+      <li><a href="https://www.geeksforgeeks.org/mongoose-findbyidandupdate-function/">Mongoose findByIdAndUpdate() Function</a></li>
+    </ul>
+		<br>
+		</div>
+	</body>
+</html>

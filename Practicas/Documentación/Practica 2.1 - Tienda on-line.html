@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js" integrity="sha512-jwrwRWZWW9J6bjmBOJxPcbRvEBSQeY4Ad0NEXSfP0vwYi/Yu9x5VhDBl3wz6Pnxs8Rx/t1P8r9/OHCRciHcT7Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    <style>
+      li {
+        padding-bottom: 1em;
+      }
+      h5 {
+        padding-top: 1em;
+      }
+      ul {
+        padding-top: 1em;
+      }
+    </style>
+
+    <title>DAI Práctica 2.1 - Tienda on-line</title>
+  </head>
+  <body>
+    <br>
+    <div class="container">
+
+      <img  style="width:100%; margin-top: -4em; height: 24em;" alt=""
+			   src="https://conviertemas.com/wp-content/uploads/2022/06/Tienda-online-CMAS-3.png">
+      <br>
+      <h2>
+        Práctica 2.1: &nbsp; Tienda on-line con express, nunjucks y mongoose 
+      </h2>
+      <br>
+      <div class="text-muted h5">10, 11 de Octubre</div>
+      <div class="text-muted h6 fst-italic">José María Guirao (<a href="mailto:jmguirao@ugr.es">jmguirao@ugr.es</a>)</div>
+    
+      <br>
+
+      <p>
+				En está practica haremos una tienda on-line con la BD de la práctica anterior. Vamos a usar
+        <a href="https://expressjs.com/es/">Express</a> como framework, el motor de plantillas
+        <a href="https://mozilla.github.io/nunjucks/">Nunjucks</a>, y el 
+        <a href="https://www.dctacademy.com/blog/what-is-object-document-mapper-odm">ODM</a> 
+        <a href="https://mongoosejs.com/">moongose</a> para interaccionar con la BD.
+        Tomaremos como referencia 
+        <a href="https://blog.appsignal.com/2023/08/09/how-to-use-mongodb-and-mongoose-for-nodejs.html">
+          How to Use MongoDB and Mongoose with Node.js</a>, excepto que la respuesta del servidor serán páginas web generadas por 
+					un motor de plantillas, en lugar de datos json.<br>
+      </p>
+
+      <p>
+        La estructura de carpetas, queda:<pre><code>├── <b>data</b>                  <span class="fw-lighter fst-italic">datos</span>
+├── <b>model</b>                 <span class="fw-lighter fst-italic">Model para interacción con la BD</span>
+⃑⃑│    ├── db.js
+│    └── productos.js
+├── <b>public</b>                <span class="fw-lighter fst-italic">Assets: css, imágenes, etc</span>
+├── <b>routes</b>                <span class="fw-lighter fst-italic">Controler</span>
+│    └── router_tienda.js
+├── <b>views</b>                 <span class="fw-lighter fst-italic">Vistas</span>
+│    ├── base.html
+│    └── home.html
+├── .env                  <span class="fw-lighter fst-italic">variables de entorno</span>
+├── docker-compose.yml    <span class="fw-lighter fst-italic">contenedores</span>
+├── seed.js               <span class="fw-lighter fst-italic">relleno BD</span>
+├── tienda.js             <span class="fw-lighter fst-italic">servidor</span>
+└── package.json          <span class="fw-lighter fst-italic">info proyecto</span></code></pre>
+      </p>
+      <p>
+        que sigue la arquitectura <a href="https://www.geeksforgeeks.org/mvc-framework-introduction/">MVC</a>,
+        con el código separado para cada componente.
+      </p>
+
+      <h5>package.json</h5>
+      <p>
+        Para ejecutar el programa, añadimos 
+<pre><code class="language-javascript">...  
+  "scripts": {
+    "tienda": "node --watch --env-file=.env tienda.js"
+  },
+...</code></pre>
+la opción <b>--watch</b> reinicia el servidor cada vez que se cambie el código.
+</p>
+
+<h5>Conexión con la BD con mongoose</h5>
+<p>
+  La conexión con la BD, debe ser para que funcione el password:
+  <pre><code class="language-javascript">// .model/db.js
+import mongoose from "mongoose";
+
+const USER_DB = process.env.USER_DB
+const PASS    = process.env.PASS
+const url = `mongodb://${USER_DB}:${PASS}@localhost:27017/myProject?authSource=admin`
+
+export default function connectDB() {     
+  try {
+    mongoose.connect(url);
+  } catch (err) {
+    console.error(err.message);
+    process.exit(1);
+  }
+
+  const dbConnection = mongoose.connection;
+  dbConnection.once("open", (_) => {
+    console.log(`Database connected: ${url}`);
+  });
+     
+  dbConnection.on("error", (err) => {
+    console.error(`connection error: ${err}`);
+  });
+  return;
+}</code></pre>
+<br>
+<h5>Esquema de las colecciones</h5>
+<p>
+  Con un <b>ODM</b>, a cada coleccion se le asigna un 
+  <a href="https://apuntes.de/nodejs-desarrollo-web/esquemas-en-mongoose/#gsc.tab=0">esquema</a>, con 
+  los tipos de datos de cada campo, validaciones  y valores por defecto, p.e.  
+<pre><code class="language-javascript">// ./model/productos.js
+import mongoose from "mongoose";
+ 
+const ProductosSchema = new mongoose.Schema({
+  "id": {
+    "type": "Number",
+    "unique": true
+  },
+  ...
+})
+const Productos = mongoose.model("productos", ProductosSchema);
+export default Productos</code></pre>
+Se puede sacar el esquema a partir de un ejemplo de datos en <a href="https://transform.tools/json-to-mongoose">transform</a>.
+
+</p>
+
+    <h5>Motor de plantillas</h5>
+
+    <p>
+      Para generar las páginas html que se manda de vuelta al navegador con cada request, usaremos el 
+      motor de plantillas <a href="https://mozilla.github.io/nunjucks/">nunjucks</a>. Sirve para generar los arhivos 
+      html donde se insertarán los datos procedentes de la BD
+<img  style="width:100%; height: 20em;"
+   src="https://selftaughtcoders.com/wp-content/uploads/2015/07/image-request-route-controller-view.png" />
+
+   Se instala:<pre><code class="language-bash">npm i nunjucks chokidar</code></pre>
+    </p>
+  <p>
+    En el servidor: 
+    <pre><code class="language-javascript">// tienda.js 
+import express   from "express"
+import nunjucks  from "nunjucks"
+      
+import connectDB from "./model/db.js"
+connectDB()
+
+const app = express()
+
+const IN = process.env.IN || 'development'
+
+nunjucks.configure('views', {         // directorio 'views' para las plantillas html
+	autoescape: true,
+	noCache:    IN == 'development',   // true para desarrollo, sin cache
+	watch:      IN == 'development',   // reinicio con Ctrl-S
+	express: app
+})
+app.set('view engine', 'html')
+
+app.use(express.static('public'))     // directorio public para archivos
+
+// test para el servidor
+app.get("/hola", (req, res) => {
+  res.send('Hola desde el servidor');
+});
+
+// Las demas rutas con código en el directorio <b>routes</b>
+import TiendaRouter from "./routes/router_tienda.js"
+app.use("/", TiendaRouter);
+
+
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(`Servidor ejecutandose en  http://localhost:${PORT}`);
+})</code></pre>    
+  </p>
+  <p>
+    Y en <pre><code class="language-javascript">// ./routes/router_tienda.js
+import express from "express";
+import Productos from "../model/productos.js";
+const router = express.Router();
+      
+router.get('/portada', async (req, res)=>{
+  try {
+    const productos = await Productos.find({})   // todos los productos
+    res.render('portada.html', { productos })    // ../views/portada.html, 
+  } catch (err) {                                // se le pasa { productos:productos }
+    res.status(500).send({err})
+  }
+})
+
+// ... más rutas aquí
+
+export default router</code></pre>
+  </p>
+
+  <h5>Tienda</h5>
+  <p>
+    Hacer una página de portda donde se muestren algunos articulos destacados.
+    La página tendrá una selección por categorias en un menú, y un buscador para los
+    articulos, similar a <a href="https://drive.google.com/file/d/1EvPV_NDXhJxBaK0vmx0llSlVmv4lBMpd/view?usp=sharing">esta</a>.
+  </p>
+  <p>
+Usar una librería como <a href="https://getbootstrap.com/">Bootstrap</a> para el CSS.
+  </p>
+	<p>
+		<b>Importante</b>: Tener en cuenta la 
+		<a href="https://jinja.palletsprojects.com/en/3.1.x/templates/#template-inheritance">herencia</a> en las plantillas
+	</p>
+
+ 
+      
+  <p>
+    <h5>Referencias:</h5>
+    <ul>
+      <li><a href="https://www.mongodb.com/developer/languages/javascript/getting-started-with-mongodb-and-mongoose/">Getting Started With MongoDB & Mongoose</a> </li>
+      <li><a href="https://www.youtube.com/watch?v=yalxT0PEx8c">Learn Bootstrap in 5 minutes </a></li>
+		  <li><a href="https://learn.vonage.com/courses/onehack/node/introducing-nunjucks/#">Introducing Nunjucks</a></li>
+      <li><a href="https://mozilla.github.io/nunjucks/templating.html">Templating</a> </li>    
+      <li><a href="https://jinja.palletsprojects.com/en/3.1.x/templates/">Templates Designer</a>
+    </ul>
+  </p>
+</div>
+</body>
+</html>

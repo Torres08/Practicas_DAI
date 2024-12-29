@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cshtml.min.js" integrity="sha512-2wQgFnVoaXxggU4WP6nmo8W15z91WyQOor7iapCRfycFWoAU3fqRfoJfoO5oNg5kl94fGgFlyeHxOcqgjEvaAQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js" integrity="sha512-jwrwRWZWW9J6bjmBOJxPcbRvEBSQeY4Ad0NEXSfP0vwYi/Yu9x5VhDBl3wz6Pnxs8Rx/t1P8r9/OHCRciHcT7Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    <style>
+      li {
+        padding-bottom: 1em;
+      }
+      h5 {
+        padding-top: 1.5rem;
+        padding-bottom: 0.5rem;
+      }
+      ul {
+        padding-top: 0.1rem;
+      }
+    </style>
+
+    <title>DAI Practica 7 - Despliegue</title>
+  </head>
+  <body>
+    <br>
+    <div class="container">
+
+      <img  style="margin-left:0vw; width: 80vw; height: 16em; margin-top:-2rem" alt=""
+			   src="https://yasthil.com/wp-content/uploads/2024/04/Caddy-Web-Server.jpg">
+    
+			<br><br><br>
+      <h6><span class="badge text-bg-secondary">Entrega 10 de Enero</span></h6>
+			<h2>
+        Práctica 7: &nbsp; Despliegue con docker compose
+      </h2>
+      <br>
+      <div class="text-muted h5">19, 20 de Diciembre</div>
+      <div class="text-muted h6 fst-italic">José María Guirao (<a href="mailto:jmguirao@ugr.es">jmguirao@ugr.es</a>)</div>
+    
+      <br>
+      <p>
+        Esn esta práctica haremos un despliegue de la tienda  con <b>docker compose</b>. 
+        De esta manera la podremos subir cualquier aplicación a
+        <a href="https://www.docker.com/blog/how-to-deploy-on-remote-docker-hosts-with-docker-compose/">cualquier máquina virtual en la nube</a>.
+      </p>
+      <p>
+        Lo primero será poner en un contenedor la aplicación de la tienda. Seguimos 
+        <a href="https://buddy.works/guides/how-dockerize-node-application">How to Dockerize a Node.js application</a>. 
+        Hacemos el archivo <b>Dockerfle</b> adpatando el que hay al final de la página.
+      </p>
+      <p>
+        Es muy conveniente tener un archivo <b>.dockerignore</b> para que no copie algunos archivos y carpetas que 
+        no tienen porque incluirse en la imágen docker y mantenga el contenedor más pequeño:
+        <pre><code class="language-bash"># .dockerignore
+data 
+node_modules
+.git
+.env
+Dockerfile
+docker-compose.yml</code></pre>
+      </p>
+		<p>
+      Las <a href="https://www.baeldung.com/ops/dockerfile-env-variable">variables de entorno</a> las ponemos ahora en el archivo <b>Dockerfile</b>,
+      en lugar de en el archivo <b>.env</b>, que no es conviente que esté en el contenedor por los passwords:
+      <pre><code class="language-bash"># Dockerfile
+...
+ENV IN=production
+ENV USER_DB=root
+ENV PASS=example
+ENV SECRET_KEY="EsTa MisMa:i8775tyjk,"
+# En windows, MAC
+ENV DB_HOST=host.docker.internal
+# En linux
+#ENV DB_HOST=172.17.0.1
+
+
+...</code></pre>      
+      La última variable de entorno es para conectar la BD al probar el contenedor, ya que la BD está en el
+      host y la aplicación dentro de un  contenedor, sin acceso al localhost del host:
+      <pre><code class="language-javascript">// ./model/db.js
+const url = `mongodb://${USER_DB}:${PASS}@${DB_HOST}:27017/myProject?authSource=admin`</code></pre>
+		</p>
+    <h5>Probando el contenedor</h5>
+		<p>
+      Como pone en la página que estamos siguiendo hacemos una imágen docker con la aplicación:
+      <pre><code class="language-bash">docker build -t tienda .</code></pre>
+      y ejecutarlo:
+      <pre><code class="language-bash">docker run --rm -p 8000:8000 tienda</code></pre>
+      con la misma BD del host, que tiene que estar funcionando.
+    </p>
+    <h5>Docker compose de producción</h5>
+		<p>
+			Haremos ahora un nuevo archivo <b>docker-compose-prod.yml</b>, que será el que 
+			<a href="https://medium.com/@xhackfuel/docker-and-docker-compose-simplifying-container-orchestration-ac9b648af05f">
+			 orqueste</a> los tres contenedores que intervienen en nuestro despliegue:
+      <ul>
+        <li>La aplicación de la tienda</li>
+        <li>La Base de Datos</li>
+        <li>Un servidor web/proxy inverso (<a href="https://caddyserver.com/"><code>Caddy</code></a>)</li>
+      </ul>
+		</p>
+
+		como en esquema de abajo, excepto que nuestra aplicación usa un tercer contenedor con la BD:<br>
+		<img style="padding: 1.5rem 0 1.5rem 0" src="https://techroads.org/content/images/2022/02/caddy-docker-ghost-20.04do.jpg" />
+	
+
+    <p>
+      El servidor web / proxy inverso se pone para manejar los certificados de <code>https</code> (cuando esté subido a un servidor), y 
+      para servir directamente archivos estáticos (los del directorio <b>public</b>), que no tienen porque 
+      pasar por la aplicación.
+    </p>
+
+		<p>
+			 Para configurar el proxy inverso seguimos: <a href="https://betterstack.com/community/guides/web-servers/caddy/">
+			 Deploying Web Apps with	Caddy: A Beginner's Guide</a>. Nos saltamos el paso 2 <b>Setting up HTTPS with Caddy</b>,
+       a no ser que se suba la apliación a un servidor en la nube. El paso 4 <b>Setting up request logging with Caddy</b> 
+       tampoco es necesario.
+		</p>
+    <p>
+      El arhivo <b>docker-compose-prod.yml</b> queda entonces,
+      <pre><code class="language-yaml"># docker-compose-prod.yml
+services:
+  tienda:
+    build: .
+    depends_on:
+      - mongo
+      - caddy
+    restart: unless-stopped
+    
+  mongo:
+    image: mongo
+    restart: unless-stopped
+    volumes:
+      - ./data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  caddy:
+    image: caddy:alpine
+    restart: unless-stopped
+    ports: 
+      - 80:80
+      - 443:443
+    volumes:
+      - caddy-config:/config
+      - caddy-data:/data
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./public:/usr/share/caddy
+    
+volumes:
+  caddy-config:
+  caddy-data:
+</code></pre>
+    </p>
+    <p>
+      Ahora la BD está en la misma red de la aplicación, así que hay que cambiar la variable de entorno correspondiente 
+      en <b>Dockerfile</b>:
+      <pre><code class="language-bash"># Dockerfile
+...
+ENV DB_HOST=mongo        
+...</code></pre>      
+    </p>
+    <p>
+      El archivo <b>Caddyfile</b> tendrá 3 secciones <a href="https://caddyserver.com/docs/caddyfile/directives/handle_path">
+        handle_path</a>: una para el build del react de la práctica 6, otra para el directorio <b>public</b>,
+        y otra para la aplicación de la tienda.
+    </p>
+    <Para>
+      Dependde como se ponga, quizás hay que cambiar el archivo <b>index.html</b> del build del react.
+      Para poner en marcha todo (desde el puerto 80):
+      <pre><code class="language-bash">docker compose -f docker-compose-prod.yml up</code></pre>
+
+    </p>
+    
+		
+
+
+
+     
+
+      <br>
+
+			<h6><span class="badge bg-secondary">Para nota</span></h6>
+			<p>
+        <ul>
+          <li>Incluir una página de <code>Error 404</code> como en 
+            <a href="https://ma.ttias.be/set-up-custom-404-page-static-sites-caddy/">Set up a custom 404 page for static sites with Caddy 2</a></li>
+        </ul>
+			</p>
+
+	
+
+    <h5>Referencias:</h5>
+    <ul>
+      <li><a href="https://docs.docker.com/compose/how-tos/production/">Use Compose in production</a></li>
+      <li><a href="https://buddy.works/guides/how-dockerize-node-application">How to Dockerize a Node.js application</a></li>
+			<li><a href="https://labex.io/tutorials/docker-how-to-deploy-multi-container-docker-apps-394980">
+				How to Deploy Multi-Container Docker Apps
+			</a></li>
+      <li><a href="https://yasthil.com/dev/2024/04/26/caddy-react-nodejs/">Overview – Caddy, Docker, React, Node.js</a></li>
+      <li><a href="https://betterstack.com/community/guides/web-servers/caddy/">Caddy: A Beginner's Guide</a></li>
+    </ul>
+		<br>
+		</div>
+	</body>
+</html>

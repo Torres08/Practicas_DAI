@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cshtml.min.js" integrity="sha512-2wQgFnVoaXxggU4WP6nmo8W15z91WyQOor7iapCRfycFWoAU3fqRfoJfoO5oNg5kl94fGgFlyeHxOcqgjEvaAQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js" integrity="sha512-jwrwRWZWW9J6bjmBOJxPcbRvEBSQeY4Ad0NEXSfP0vwYi/Yu9x5VhDBl3wz6Pnxs8Rx/t1P8r9/OHCRciHcT7Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    <style>
+      li {
+        padding-bottom: 1em;
+      }
+      h5 {
+        padding-top: 1em;
+      }
+      ul {
+        padding-top: 1em;
+      }
+    </style>
+
+    <title>DAI Practica 6 - SPA con Vite y React</title>
+  </head>
+  <body>
+    <br>
+    <div class="container">
+
+      <img  style="margin-left:0vw; width: 70vw; height: 18em; margin-top:-4rem" alt=""
+			   src="https://media2.dev.to/dynamic/image/width=1000,height=420,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2F3xdgj7v9vhogcr37ar7b.png">
+    
+			<br><br><br>
+      <h6><span class="badge text-bg-secondary">Entrega 20 de Diciembre</span></h6>
+			<h2>
+        Práctica 6: &nbsp; Single Page Application con Vite y React
+      </h2>
+      <br>
+      <div class="text-muted h5">12, 13 de Diciembre</div>
+      <div class="text-muted h6 fst-italic">José María Guirao (<a href="mailto:jmguirao@ugr.es">jmguirao@ugr.es</a>)</div>
+    
+      <br>
+      <p>
+				En esta práctica haremos una SPA que muestre un escaparate de la tienda como <a href="https://drive.google.com/file/d/14Gq_b032VkZJSROKu2DFb8pP04QzghUA/view?usp=sharing">este</a>. 
+				Usaremos la librería de UI <a href="https://react.dev/">React</a>, las clases de css <a href="https://tailwindcss.com/">Tailwind</a>,
+				y alguna librería de componentes sobre Tailwind como <a href="https://daisyui.com/">daisyUI</a> u 
+				<a href="https://www.reddit.com/r/tailwindcss/comments/1at23n7/best_free_tailwind_based_component_libraries_and/">otra similar</a>.
+    </p>
+		<p>
+			Los datos los traemos del api <a href="https://fakestoreapi.com/products">fakestoreapi</a>, con la librería 
+			<a href="https://swr.vercel.app/es-ES">swr</a>.
+		</p>
+		<p>
+			Primero <a href="https://tailwindcss.com/docs/guides/vite">instalamos la herramienta de desarrollo</a>, los
+			<a href="https://daisyui.com/docs/install/">componentes css</a> y el <a href="https://swr.vercel.app/es-ES/docs/getting-started">
+				hook de react para el api</a>.
+			</a>
+		</p>
+		<p>
+			Para <a href="https://sahilchandravanshi.hashnode.dev/render-lists-in-reactjs">renderizar listas en react</a>, hay que añadir 
+			un atributo <code>key</code> distinto para cada elemento de la lista, para que react distinga un  elemento de otro
+			a la hora de actualizarlo.
+		</p>
+
+  
+      <br>
+
+			<h6><span class="badge bg-secondary">Para nota</span></h6>
+			<p>
+        <ul>
+          <li>Poner a funcionar el botón <b>Buy now</b> de cada producto, para que muestre una página de detalle del producto 
+            (como en <a href="https://react.dev/learn#sharing-data-between-components">
+              Sharing data between components</a>).</li>
+        </ul>
+			</p>
+
+    <h5>Referencias:</h5>
+    <ul>
+      <li><a href="https://es.react.dev/learn">Aprende React</a></li>
+      <li><a href="https://www.youtube.com/watch?v=E8lXC2mR6-k">
+        Master React JS in easy way</a></li>
+
+      <li><a href="https://www.digitalocean.com/community/conceptual-articles/understanding-how-to-render-arrays-in-react">
+        Understanding How To Render Arrays in React</a></li>
+      <li><a href="https://www.freecodecamp.org/news/how-to-fetch-api-data-in-react/">
+        How to Fetch API Data in React</a></li>
+      <li><a href="https://swr.vercel.app/es-ES/examples/basic">Uso Básico de SWR</a></li>
+    </ul>
+		<br>
+		</div>
+	</body>
+</html>

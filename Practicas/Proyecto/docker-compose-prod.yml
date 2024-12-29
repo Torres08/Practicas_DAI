@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  tienda:
+    build: .
+    depends_on:
+      - mongo
+      - caddy
+    restart: unless-stopped
+    environment:
+      - IN=production
+      - USER_DB=root
+      - PASS=example
+      - SECRET_KEY=EsTa MisMa:i8775tyjk,
+      - DB_HOST=mongo
+
+  mongo:
+    image: mongo
+    restart: unless-stopped
+    volumes:
+      - ./data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  caddy:
+    image: caddy:alpine
+    restart: unless-stopped
+    ports: 
+      - 8000:80
+      - 443:443
+    volumes:
+      - caddy-config:/config
+      - caddy-data:/data
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./public:/usr/share/caddy
+      - ./React-tienda/dist:/usr/share/caddy/react-tienda
+
+volumes:
+  caddy-config:
+  caddy-data:

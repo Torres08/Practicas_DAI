@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cshtml.min.js" integrity="sha512-2wQgFnVoaXxggU4WP6nmo8W15z91WyQOor7iapCRfycFWoAU3fqRfoJfoO5oNg5kl94fGgFlyeHxOcqgjEvaAQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js" integrity="sha512-jwrwRWZWW9J6bjmBOJxPcbRvEBSQeY4Ad0NEXSfP0vwYi/Yu9x5VhDBl3wz6Pnxs8Rx/t1P8r9/OHCRciHcT7Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    <style>
+      li {
+        padding-bottom: 1em;
+      }
+      h5 {
+        padding-top: 1em;
+      }
+      ul {
+        padding-top: 1em;
+      }
+    </style>
+
+    <title>DAI Práctica 5.1 - DOM, Ratings</title>
+  </head>
+  <body>
+    <br>
+    <div class="container">
+
+      <img  style="margin-left:0vw; width: 90vw; height: 18em;" alt=""
+			   src="https://somospnt.com/images/257-Javadom.jpg">
+    
+			<br><br>
+      <h6><span class="badge text-bg-secondary">Entrega 9 de Diciembre</span></h6>
+      <h2>
+        Práctica 5.1: &nbsp; DOM, leer ratings
+      </h2>
+      <br>
+      <div class="text-muted h5">21, 22 de Noviembre</div>
+      <div class="text-muted h6 fst-italic">José María Guirao (<a href="mailto:jmguirao@ugr.es">jmguirao@ugr.es</a>)</div>
+    
+      <br>
+      <p>
+				En esta práctica añadiremos la visualización del 'star rating' a  cada producto:
+				
+			 <img src="https://www.perfecto.io/sites/default/files/image/2019-05/5stars.png" style="width: 15vw; height: 3vh;" alt="">
+				como en <a href="https://www.w3schools.com/howto/howto_css_star_rating.asp">
+					How TO - Star Rating</a>.
+        </p>
+        <p>
+          Para esto añadiremos codigo ES6 al navegador. Al terminar la carga de la página, este código  hara llamadas 
+					<a href="https://developer.mozilla.org/es/docs/Web/API/Fetch_API/Using_Fetch">fetch</a>
+           al api de la práctica anterior, y con su respuesta se formara el html para
+          visualizar las estrellas. 
+          El sitio en el que debe aparecer el rating estará marcado:
+<pre><code class="language-cshtml">&lt;span class="stars" data-_id="{{producto._id}}"&gt; 
+  Aqui irá el rating de {{producto._id}}
+&lt;/span&gt;</code></pre>
+que luego se substituirá por las estrellas.
+        </p>
+       Haremos un archivo aparte <b>ratings.js</b> que se 
+       <a href="http://web.simmons.edu/~grabiner/comm244/weeknine/including-javascript.html">cargue </a> el en 
+       el header:
+<pre><code class="language-javascript">// ratings.js
+// se ejecuta cuando la página está completamente cargada
+document.addEventListener('DOMContentLoaded', () => {
+
+  console.log('Iniciando fetch ...')
+  const ele_stars = document.getElementsByClassName('stars')  // todos los elementos de la clase 'stars' que haya en la página
+  
+  for (const ele of ele_stars) {
+   const ide = ele.dataset._id   // _id esta en los atributos del dataset
+    ...
+    // hacer el fecth, y con lo que devuelva formar el html y ponerlo:
+    ele.innerHTML = html_nuevo_con_las_estrellas
+  }
+})
+</code></pre>        
+      </p>
+      <br>
+
+
+    <h5>Referencias:</h5>
+    <ul>
+      <li><a href="https://javascript.info/onload-ondomcontentloaded#domcontentloaded">Document and resource loading</a></li>
+      <li><a href="https://javascript.info/fetch">fetch()</a></li>
+      <li><a href="https://javascript.info/searching-elements-dom">Searching the DOM</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes">Using data attributes</a></li>
+      <li><a href="https://javascript.info/basic-dom-node-properties#innerhtml-the-contents">innerHTML</a></li>
+    </ul>
+		<br>
+		</div>
+	</body>
+</html>

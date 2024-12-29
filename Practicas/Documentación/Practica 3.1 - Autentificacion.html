@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js" integrity="sha512-jwrwRWZWW9J6bjmBOJxPcbRvEBSQeY4Ad0NEXSfP0vwYi/Yu9x5VhDBl3wz6Pnxs8Rx/t1P8r9/OHCRciHcT7Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    <style>
+      li {
+        padding-bottom: 1em;
+      }
+      h5, h6 {
+        padding-top: 1em;
+      }
+      ul {
+        padding-top: 1em;
+      }
+    </style>
+
+    <title>DAI Práctica 3.1 - Autentificación</title>
+  </head>
+  <body>
+    <br>
+    <div class="container">
+
+      <!-- <img  style="width:100%; margin-top: -4em; height: 24em;" alt=""
+			   src="https://developer.orange.com/od-uploads/user-authentication-on-mobile-illustration_555x254.png">
+      <br><br> -->
+      <h2>
+        Práctica 3.1: &nbsp; Autentificación con JWT
+      </h2>
+      <br>
+      <div class="text-muted h5">31 Octubre, 1 de Noviembre</div>
+      <div class="text-muted h6 fst-italic">José María Guirao (<a href="mailto:jmguirao@ugr.es">jmguirao@ugr.es</a>)</div>
+    
+      <br>
+      <p>
+        En esta práctica añadiremos la autentificación a la tienda on-line de la práctica anterior. 
+        Para esto añadiremos una opcíon <kbd class="text-bg-success px-4">Identificarse</kbd> en el menú superior.
+      </p>
+      <p>
+        Esta opción dara acceso a una página de login, donde se soliciten las credenciales del usuario: <code>username</code>, y 
+        <code>password</code>.
+      </p>
+      <p>
+        Estas credenciales se recogeran en el servidor, comprobandose que existe el usuario y que el password es el 
+        que le corresponde. En caso de que no fuera así, se devolverán los correspondientes mensajes de error.
+      </p>
+      <p>
+        Todo este código lo pondremos en otro router:
+				<pre><code class="language-javascript">// ./router/usuarios.js
+...
+// Para mostrar formulario de login
+router.get('/login', (req, res)=>{
+  res.render("login.html")
+})
+
+// Para recoger datos del formulario de login 
+router.post('/login', async (req, res)=> {
+  ...
+  res.render("bienvenida.html", {usuario})
+})
+
+router.get('/logout', (req, res) => {
+  ...
+})</code></pre>
+       </p>
+       <h5>Token jwt</h5>
+       <p>
+        Para autentificar usaremos <a href="https://auth0.com/docs/secure/tokens/json-web-tokens">Json Web Tokens</a>,
+        que se intercambiaran entre la aplicación y el navegador en una <a href="https://developer.mozilla.org/es/docs/Web/HTTP/Cookies">cookie</a>:
+
+       </p>
+       <img src="https://media.geeksforgeeks.org/wp-content/uploads/20210925202132/Untitled1-660x404.png"
+            width="75%" height="260" style="margin-left: 10vw;"    
+       >
+       <br><br>
+       <p>
+        Seguimos <a href="https://www.codu.co/articles/beginner-s-authentication-jwt-and-cookies-ifw5htmd">
+          Beginner's authentication, JWT and cookies
+        </a>. Para generar y enviar el token:
+				<pre><code class="language-javascript">import jwt from "jsonwebtoken"
+const token = jwt.sign({usuario: user.username}, process.env.SECRET_KEY)
+
+res.cookie("access_token", token, {            // cookie en el response
+  httpOnly: true,
+  secure: process.env.IN === 'production'      // en producción, solo con https
+}).render("bienvenida.html", {usuario: user.username})</code></pre>        
+       </p>
+       <h5>Middleware de autentificación</h5>
+       <p>
+        Usaremos una función que intercepte el request para comprobar la cookie, y en su caso añdir la información del token:
+        <pre><code class="language-javascript">// tienda.js 
+import cookieParser from "cookie-parser"
+import jwt from "jsonwebtoken"
+...
+app.use(cookieParser())
+
+// middleware de
+const autentificación = (req, res, next) => {
+	const token = req.cookies.access_token;
+	if (token) {
+		const data = jwt.verify(token, process.env.SECRET_KEY);
+		req.username = data.usuario  // username en el request
+	}
+	next()
+}
+app.use(autentificación)</code></pre>
+    </p>
+    <br>
+		<p>
+      Cuando usuario esté autentificado, camabiará en el menú superior <kbd class="text-bg-success px-4">Identificarse</kbd> por 
+      <kbd class="text-bg-success px-4">Salir</kbd>. Para esto habrá que recoger está información en todas las rutas para tenerla en cuenta en
+      las plantilla "base.html", y que aparezca 'Identificarse' o 'Salir' según haya usuario o no.
+      <pre><code class="language-javascript">// ./routes/router_tienda.js
+router.get('/ver-carrito', async (req, res) => {
+  const usuario = req.username   // undefined si no autentificado
+  ...
+  res.render('carrito.html', {..., usuario})
+})</code></pre>
+      </p>
+			<p>
+        Para el logout: <pre><code class="language-javascript">router.get('/logout', (req, res) => {
+  const usuario = req.username 
+  res.clearCookie('access_token').render("despedida.html", {usuario})
+})</code></pre>
+			</p>
+
+
+
+			<br>
+
+			<h6><span class="badge bg-secondary">Para nota</span></h6>
+			<ul>
+				<li>Usar contraseñas cifradas como en <a href="https://blog.logrocket.com/password-hashing-node-js-bcrypt/">Password hashing in Node.js with bcrypt</a></li>
+			</ul>	
+	
+    <br>      
+		</div>
+	</body>
+</html>

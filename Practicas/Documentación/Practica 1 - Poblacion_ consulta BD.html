@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js" integrity="sha512-jwrwRWZWW9J6bjmBOJxPcbRvEBSQeY4Ad0NEXSfP0vwYi/Yu9x5VhDBl3wz6Pnxs8Rx/t1P8r9/OHCRciHcT7Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    <style>
+      li {
+        padding-bottom: 1em;
+      }
+      h5 {
+        padding-top: 1em;
+      }
+      ul {
+        padding-top: 1em;
+      }
+    </style>
+
+    <title>DAI Práctica 1 - Base de Datos</title>
+  </head>
+  <body>
+    <br>
+    <div class="container">
+
+      <img  style="width:80%; margin-top: -4em;" alt=""
+			   src="https://www.nodejsera.com/library/assets/img/node-mongo.png">
+      <br>
+      <h6><span class="badge bg-danger">Entrega 11 de Octubre</span></h6>
+      <h2>
+        Práctica 1: &nbsp; Población inicial y consultas en la Base de Datos
+      </h2>
+      <br>
+      <div class="text-muted h5">26 de Septiembre - 4 de Octubre</div>
+      <div class="text-muted h6 fst-italic">José María Guirao (<a href="mailto:jmguirao@ugr.es">jmguirao@ugr.es</a>)</div>
+    
+      <br>
+
+      <p>
+				Durante las prácticas de la asignatura iremos haciendo gradualmente una aplicación de tienda virtual.
+				En esta primera práctica empezamos por rellenar la BD con datos de prueba.
+        Los datos los traemos de <a href="https://fakestoreapi.com/products">https://fakestoreapi.com/products</a> 
+        y de <a href="https://fakestoreapi.com/users">https://fakestoreapi.com/users</a>.
+      </p>
+
+      <p>
+        Usamos la BD <a href="https://www.mongodb.com/es/company/what-is-mongodb">MongoDB</a> de la práctica anterior 
+        con el driver para node <a href="https://www.npmjs.com/package/mongodb">mongodb</a>.
+      </p>
+
+      <h5>Instalación del driver</h5>
+      <p>
+        Como indica en  la página del npm:
+        <pre><code class="language-bash">npm i mongodb
+npm i -D @types/node</code></pre>
+      La segunda instalación con la dependencia de desarrollo <b>-D</b>, es para vsCode.
+      </p>
+      <p>
+        Los archivos se instalan en la carpeta <b>node_modules</b>.
+      </p>
+
+        <h5>package.json</h5>
+      <p>
+        Al instalar las dependcias se crea un archivo <a href="https://lenguajejs.com/npm/administracion/package-json/">
+          <b>package.json</b></a> con información del proyecto:
+        de momento las depencias que usa, y las que se que solo se usan en la fase de desarrollo. <br>
+        Este archivo está <b>siempre presente</b> en los proyectos de node para el control de las versiones de 
+        las dependencias. Es fundamental que sean las mismas durante todo el proyecto. Las versiones mas modernas 
+        no tienen que ser compatibles con las anteriores.
+      </p>
+      Lo completamos:
+
+<pre><code class="language-javascript">{
+  "name": "Práctica-DAI-1",
+  "version": "1.0",
+  "author": "Yo", 
+  "description": "Para llenar la BD con datos de prueba",
+  "main": "seed.js",
+  "type": "module",
+  "scripts": {
+    "seed": "node  --env-file=.env seed.js"
+  }
+  "dependencies": {
+    "mongodb": "^6.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.4"
+  }
+}</code></pre>
+<br>
+<p>
+  <code>"type": "module"</code>, es para indicar que vamos a usar 
+  <a href="https://medium.com/@kalanamalshan98/simplifying-node-js-modules-commonjs-vs-es6-import-export-0e15d770762e">ES6 modules</a>.
+</p>
+<h5>fetch</h5>
+<p>
+Los datos los traemos con el <a href="https://brightdata.com/blog/how-tos/fetch-api-nodejs">fetch nativo de node</a>:
+</p>
+
+
+
+<pre><code class="language-javascript">// seed.js
+
+import { MongoClient } from 'mongodb'
+  
+console.log( '🏁 seed.js ----------------->')
+
+// del archivo .env
+const USER_DB = process.env.USER_DB
+const PASS    = process.env.PASS
+  
+const url    = `mongodb://${USER_DB}:${PASS}@localhost:27017`
+const client = new MongoClient(url);
+  
+// Database Name
+const dbName = 'myProject';
+  
+// función asíncrona
+async function Inserta_datos_en_colección (colección, url) {
+                                  
+  try {
+    const datos = await fetch(url).then(res => res.json())
+    //console.log(datos)
+
+    // ... Insertar datos en la BD aquí
+
+    return `${datos.length} datos traidos para ${colección}`
+
+  } catch (err) {
+      err.errorResponse += ` en fetch ${colección}`
+      throw err    
+  }
+}
+  
+// Inserción consecutiva
+Inserta_datos_en_colección('productos', 'https://fakestoreapi.com/products')
+   .then((r)=>console.log(`Todo bien: ${r}`))                                 // OK
+   .then(()=>Inserta_datos_en_colección('usuarios', 'https://fakestoreapi.com/users'))
+   .then((r)=>console.log(`Todo bien: ${r}`))                                // OK
+   .catch((err)=>console.error('Algo mal: ', err.errorResponse))             // error
+  
+
+console.log('Lo primero que pasa')</code></pre>
+
+  <br>
+  <p>
+    Los passwords no deben estar en el código, se ponen en un archivo <b>.env</b>
+    <pre><code class="language-bash">USER_DB=root
+PASS=example</code></pre>   
+  </p>
+  <p>
+    El código se ejecuta con el script de <b>packaje.json</b>:
+    <pre><code class="language-bash">> npm run seed</code></pre>
+  </p>
+
+  <h5> Consultas </h5>
+
+    Hacer el código correspondiente para resolver:
+    <ul>
+      <li>Productos de más de 100 $</li>
+      <li>Productos que contengan 'winter' en la descripción, ordenados por precio</li>
+      <li>Productos de joyería ordenados por rating</li>
+      <li>Reseñas totales (count en rating)</li>
+      <li>Puntuación media por categoría de producto</li>
+      <li>Usuarios sin digitos en el password</li>
+    </ul>
+
+    <br>
+    <h6><span class="badge bg-secondary">Para nota</span></h6>
+    <ul>
+      <li> Hacer una copia de seguridad de la BD
+          (<a href="https://www.mongodb.com/docs/database-tools/mongodump/#mongodb-binary-bin.mongodump">mongodump</a>)
+      <li> Bajarse también los archivos de imagen de los productos, y guardarlos en una carpeta.
+      </li>
+      </ul>	
+
+      
+      <p>
+        <h5>Referencias:</h5>
+        <ul>
+          <li><a href="https://www.javascripttutorial.net/">JavaScript Tutorial</a> </li>    
+          <li><a href="https://javascript.info/">The Modern JavaScript Tutorial</a>
+          <li><a href="https://www.mongodb.com/docs/drivers/node/current/">MongoDB Node Driver</a></li>
+					<li><a href="https://www.mongodb.com/docs/drivers/node/current/usage-examples/insertMany/#std-label-node-usage-insertmany">Insert Multiple Documents</a></li>
+        </ul>
+      </p>
+    </div>
+  </body>
+</html>

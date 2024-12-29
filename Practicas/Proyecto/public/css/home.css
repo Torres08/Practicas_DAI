@@ -1,0 +1,42 @@
+/* override */
+.btn-outline-success:hover {
+    background-color: #A367B1;
+    border-color: #FFD1E3;
+}
+
+.btn-outline-success {
+    border-color: #A367B1;
+    border-color: #FFD1E3;
+}
+
+/*
+*/
+
+.navbar-toggler {
+    border-color: #FFD1E3;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%23FFD1E3' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.navbar-toggler:focus,
+.navbar-toggler:active {
+    outline: none;
+    box-shadow: none;
+
+}
+
+.navbar-toggler-icon:focus,
+.navbar-toggler-icon:active {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%23FFD1E3' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+
+.card:hover {
+    transform: scale(1.05);
+  }
+  
+/*
+*/
+
